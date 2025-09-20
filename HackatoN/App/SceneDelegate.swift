@@ -16,7 +16,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let rootVC = QuestionListViewController()
+        var questionListModel = QuestionListModel(questions: [
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+            TextQuestionModel(question: "Hello, World!"),
+            TextQuestionModel(question: "Your name?"),
+            MultipleChoiceQuestionModel(question: "??", options: ["First", "Second", "Third"]),
+        ])
+        let rootVC = QuestionListViewController(questionListModel: questionListModel)
         let navController = UINavigationController(rootViewController: rootVC)
     
         window.rootViewController = navController
