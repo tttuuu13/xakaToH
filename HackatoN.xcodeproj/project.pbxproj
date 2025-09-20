@@ -7,40 +7,54 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0128F0502E7ED20B00B44DB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0128F0472E7ED20B00B44DB8 /* Assets.xcassets */; };
-		0128F0522E7ED20B00B44DB8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0128F04A2E7ED20B00B44DB8 /* LaunchScreen.storyboard */; };
-		0128F0542E7ED20B00B44DB8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128F0462E7ED20B00B44DB8 /* AppDelegate.swift */; };
-		0128F0552E7ED20B00B44DB8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128F04D2E7ED20B00B44DB8 /* SceneDelegate.swift */; };
-		0128F0562E7ED20B00B44DB8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128F04E2E7ED20B00B44DB8 /* ViewController.swift */; };
-		0128F0582E7ED28300B44DB8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0128F0572E7ED28300B44DB8 /* GoogleService-Info.plist */; };
 		0128F05B2E7ED48800B44DB8 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0128F05A2E7ED48800B44DB8 /* FirebaseAuth */; };
 		0128F05D2E7ED48800B44DB8 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0128F05C2E7ED48800B44DB8 /* FirebaseCore */; };
 		0128F05F2E7ED48800B44DB8 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 0128F05E2E7ED48800B44DB8 /* FirebaseDatabase */; };
 		0128F0612E7ED48800B44DB8 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0128F0602E7ED48800B44DB8 /* FirebaseFirestore */; };
 		0128F0632E7ED48800B44DB8 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 0128F0622E7ED48800B44DB8 /* FirebaseStorage */; };
-		0144FACA2E7EDCA100A720EA /* QuestionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144FAC92E7EDCA100A720EA /* QuestionListViewController.swift */; };
-		0144FACC2E7EDCAC00A720EA /* QuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144FACB2E7EDCAC00A720EA /* QuestionCell.swift */; };
-		0144FACE2E7EDCB000A720EA /* UIView+Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0144FACD2E7EDCB000A720EA /* UIView+Pin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0128F02E2E7ED14700B44DB8 /* HackatoN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackatoN.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		0128F0462E7ED20B00B44DB8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0128F0472E7ED20B00B44DB8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		0128F0482E7ED20B00B44DB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0128F0492E7ED20B00B44DB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		0128F04D2E7ED20B00B44DB8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		0128F04E2E7ED20B00B44DB8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		0128F0572E7ED28300B44DB8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		0144FAC92E7EDCA100A720EA /* QuestionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionListViewController.swift; sourceTree = "<group>"; };
-		0144FACB2E7EDCAC00A720EA /* QuestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCell.swift; sourceTree = "<group>"; };
-		0144FACD2E7EDCB000A720EA /* UIView+Pin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Pin.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0144FAD82E7EDF2D00A720EA /* Exceptions for "App" folder in "HackatoN" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 0128F02D2E7ED14700B44DB8 /* HackatoN */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0144FACF2E7EDD0D00A720EA /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Models;
+			sourceTree = "<group>";
+		};
+		0144FAD32E7EDE8000A720EA /* Extentions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Extentions;
+			sourceTree = "<group>";
+		};
+		0144FAD42E7EDE8F00A720EA /* ViewControllers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		0144FAD52E7EDE9D00A720EA /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		0144FAD72E7EDF1D00A720EA /* App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0144FAD82E7EDF2D00A720EA /* Exceptions for "App" folder in "HackatoN" target */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -80,17 +94,11 @@
 		0128F04F2E7ED20B00B44DB8 /* HackatoN */ = {
 			isa = PBXGroup;
 			children = (
+				0144FAD72E7EDF1D00A720EA /* App */,
+				0144FAD52E7EDE9D00A720EA /* Views */,
+				0144FAD42E7EDE8F00A720EA /* ViewControllers */,
+				0144FAD32E7EDE8000A720EA /* Extentions */,
 				0144FACF2E7EDD0D00A720EA /* Models */,
-				0144FACD2E7EDCB000A720EA /* UIView+Pin.swift */,
-				0144FACB2E7EDCAC00A720EA /* QuestionCell.swift */,
-				0144FAC92E7EDCA100A720EA /* QuestionListViewController.swift */,
-				0128F0462E7ED20B00B44DB8 /* AppDelegate.swift */,
-				0128F0472E7ED20B00B44DB8 /* Assets.xcassets */,
-				0128F0482E7ED20B00B44DB8 /* Info.plist */,
-				0128F04A2E7ED20B00B44DB8 /* LaunchScreen.storyboard */,
-				0128F04D2E7ED20B00B44DB8 /* SceneDelegate.swift */,
-				0128F04E2E7ED20B00B44DB8 /* ViewController.swift */,
-				0128F0572E7ED28300B44DB8 /* GoogleService-Info.plist */,
 			);
 			path = HackatoN;
 			sourceTree = "<group>";
@@ -112,6 +120,10 @@
 			);
 			fileSystemSynchronizedGroups = (
 				0144FACF2E7EDD0D00A720EA /* Models */,
+				0144FAD32E7EDE8000A720EA /* Extentions */,
+				0144FAD42E7EDE8F00A720EA /* ViewControllers */,
+				0144FAD52E7EDE9D00A720EA /* Views */,
+				0144FAD72E7EDF1D00A720EA /* App */,
 			);
 			name = HackatoN;
 			packageProductDependencies = (
@@ -167,9 +179,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0128F0502E7ED20B00B44DB8 /* Assets.xcassets in Resources */,
-				0128F0582E7ED28300B44DB8 /* GoogleService-Info.plist in Resources */,
-				0128F0522E7ED20B00B44DB8 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,27 +189,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0144FACA2E7EDCA100A720EA /* QuestionListViewController.swift in Sources */,
-				0128F0542E7ED20B00B44DB8 /* AppDelegate.swift in Sources */,
-				0144FACE2E7EDCB000A720EA /* UIView+Pin.swift in Sources */,
-				0128F0552E7ED20B00B44DB8 /* SceneDelegate.swift in Sources */,
-				0128F0562E7ED20B00B44DB8 /* ViewController.swift in Sources */,
-				0144FACC2E7EDCAC00A720EA /* QuestionCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		0128F04A2E7ED20B00B44DB8 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0128F0492E7ED20B00B44DB8 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0128F0422E7ED14A00B44DB8 /* Debug */ = {
@@ -211,7 +203,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = HackatoN/Info.plist;
+				INFOPLIST_FILE = HackatoN/App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -242,7 +234,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = HackatoN/Info.plist;
+				INFOPLIST_FILE = HackatoN/App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

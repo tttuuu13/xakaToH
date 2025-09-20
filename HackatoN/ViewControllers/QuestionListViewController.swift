@@ -57,7 +57,8 @@ extension QuestionListViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "QuestionCell", for: indexPath) as? QuestionCell else {
             return UITableViewCell()
         }
-        cell.configure(question: questions[indexPath.row], answer: answers[indexPath.row])
+        var textQuestionModel = TextQuestionModel.init(question: questions[indexPath.row])
+        cell.configure(with: textQuestionModel)
         
         // сохраняем индекс в tag для связи с массивом answers
         cell.answerTextView.tag = indexPath.row
