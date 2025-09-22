@@ -8,6 +8,8 @@
 import UIKit
 
 final class ExamsListCell: UITableViewCell {
+    static let reuseIdentifier = "ExamsListCell"
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .medium)

@@ -19,7 +19,14 @@ final class MainView: UIView {
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 1
         return label
+    }()
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
     }()
     
     // MARK: - Init
@@ -38,11 +45,25 @@ final class MainView: UIView {
         backgroundColor = .systemBackground
         
         addSubview(welcomeLabel)
+        addSubview(tableView)
         
-        NSLayoutConstraint.activate([
-            welcomeLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            welcomeLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
-        ])
+        welcomeLabel.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 12)
+        welcomeLabel.pinHorizontal(to: self, 12)
+        
+        tableView.pinTop(to: welcomeLabel, 12)
+        tableView.pinHorizontal(to: self, 12)
+        tableView.pinBottom(to: self, 12)
+    }
+    
+    // MARK: - Public API
+    func configureTableView(delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
+        tableView.delegate = delegate
+        tableView.dataSource = dataSource
+        tableView.register(ExamsListCell.self, forCellReuseIdentifier: ExamsListCell.reuseIdentifier)
+    }
+    
+    func reloadData() {
+        tableView.reloadData()
     }
 }
 

@@ -6,5 +6,7 @@
 //
 
 struct QuestionListModel {
+    let name: String
+    var status: ExamStatus
     var questions: [QuestionProtocol]
 }
