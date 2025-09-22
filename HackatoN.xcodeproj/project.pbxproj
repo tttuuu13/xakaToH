@@ -57,16 +57,6 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		0144FB9A2E814B2F00A720EA /* ViewController */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ViewController;
-			sourceTree = "<group>";
-		};
-		0144FBA42E814B3400A720EA /* View */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = View;
-			sourceTree = "<group>";
-		};
 		0144FBA92E814B3900A720EA /* Firebase */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Firebase;
@@ -110,8 +100,6 @@
 			isa = PBXGroup;
 			children = (
 				0144FBA92E814B3900A720EA /* Firebase */,
-				0144FBA42E814B3400A720EA /* View */,
-				0144FB9A2E814B2F00A720EA /* ViewController */,
 				0144FAD72E7EDF1D00A720EA /* App */,
 				0144FAD52E7EDE9D00A720EA /* Views */,
 				0144FAD42E7EDE8F00A720EA /* ViewControllers */,
@@ -142,8 +130,6 @@
 				0144FAD42E7EDE8F00A720EA /* ViewControllers */,
 				0144FAD52E7EDE9D00A720EA /* Views */,
 				0144FAD72E7EDF1D00A720EA /* App */,
-				0144FB9A2E814B2F00A720EA /* ViewController */,
-				0144FBA42E814B3400A720EA /* View */,
 				0144FBA92E814B3900A720EA /* Firebase */,
 			);
 			name = HackatoN;
