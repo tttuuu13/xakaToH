@@ -61,6 +61,17 @@ final class MainViewController: UIViewController {
                     "option 3",
                     "option 4"
                 ])
+            ]),
+            QuestionListModel(name: "second exam", status: .notStarted, questions: [
+                TextQuestionModel(question: "text question 1"),
+                TextQuestionModel(question: "text question 2"),
+                TextQuestionModel(question: "text question 3"),
+                MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                    "option 1",
+                    "option 2",
+                    "option 3",
+                    "option 4"
+                ])
             ])
         ]
     }

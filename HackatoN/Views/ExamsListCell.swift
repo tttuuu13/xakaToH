@@ -36,7 +36,7 @@ final class ExamsListCell: UITableViewCell {
         titleLabel.pinTop(to: contentView, 12)
         titleLabel.pinHorizontal(to: contentView)
         
-        statusLabel.pinTop(to: titleLabel, 8)
+        statusLabel.pinTop(to: titleLabel.bottomAnchor, 8)
         statusLabel.pinHorizontal(to: contentView)
         statusLabel.pinBottom(to: contentView, 12)
     }
@@ -46,6 +46,7 @@ final class ExamsListCell: UITableViewCell {
     }
     
     func configure(with model: QuestionListModel) {
+        print("\(model.name)")
         titleLabel.text = model.name
         statusLabel.text = model.status.rawValue
     }

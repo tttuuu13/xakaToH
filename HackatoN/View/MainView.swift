@@ -50,7 +50,7 @@ final class MainView: UIView {
         welcomeLabel.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 12)
         welcomeLabel.pinHorizontal(to: self, 12)
         
-        tableView.pinTop(to: welcomeLabel, 12)
+        tableView.pinTop(to: welcomeLabel.bottomAnchor, 12)
         tableView.pinHorizontal(to: self, 12)
         tableView.pinBottom(to: self, 12)
     }
