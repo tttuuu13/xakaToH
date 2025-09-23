@@ -12,65 +12,113 @@ import FirebaseFirestore
 
 class ProfileViewController: UIViewController {
     
-    private let stackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 16
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
+    private let profileView = ProfileView()
+    private let db = Firestore.firestore()
     
-    private let emailLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        label.textAlignment = .center
-        return label
-    }()
-    
-    private let roleLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textAlignment = .center
-        label.textColor = .systemGray
-        return label
-    }()
+    override func loadView() {
+        self.view = profileView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        setupController()
         loadUserData()
     }
     
-    private func setupUI() {
+    private func setupController() {
         view.backgroundColor = .systemBackground
         title = "Профиль"
         
-        view.addSubview(stackView)
-        stackView.addArrangedSubview(emailLabel)
-        stackView.addArrangedSubview(roleLabel)
+        profileView.delegate = self
         
-        NSLayoutConstraint.activate([
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32)
-        ])
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Выйти",
+            style: .plain,
+            target: self,
+            action: #selector(logoutTapped)
+        )
     }
     
     private func loadUserData() {
         guard let user = Auth.auth().currentUser else { return }
         
-        emailLabel.text = user.email
+        profileView.emailLabel.text = "Почта: \(user.email ?? "")"
+        profileView.nameLabel.text = user.displayName != nil ? "Имя: \(user.displayName!)" : "Имя пользователя"
         
-        // Загружаем роль из Firestore
-        let db = Firestore.firestore()
         db.collection("users").document(user.uid).getDocument { [weak self] snapshot, error in
             DispatchQueue.main.async {
-                if let data = snapshot?.data(),
-                   let role = data["role"] as? String {
-                    self?.roleLabel.text = "Роль: \(role)"
+                guard let data = snapshot?.data() else { return }
+                
+                if let role = data["role"] as? String {
+                    self?.updateRoleUI(role: role)
+                }
+                if let name = data["name"] as? String {
+                    self?.profileView.nameTextField.text = name
+                    self?.profileView.nameLabel.text = "Имя: \(name)"
                 }
             }
         }
+    }
+    
+    @objc private func logoutTapped() {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            print("Ошибка выхода: \(error.localizedDescription)")
+        }
+    }
+    
+    private func updateRoleUI(role: String) {
+        profileView.roleLabel.text = "Роль: \(role)"
+        
+        if role.lowercased().contains("учитель") {
+            profileView.avatarImageView.image = UIImage(systemName: "person.circle")
+            profileView.avatarImageView.tintColor = .systemGreen
+            profileView.roleLabel.textColor = .systemGreen
+        } else {
+            profileView.avatarImageView.image = UIImage(systemName: "books.vertical.fill")
+            profileView.avatarImageView.tintColor = .systemBlue
+            profileView.roleLabel.textColor = .systemBlue
+        }
+    }
+}
+
+extension ProfileViewController: ProfileViewDelegate {
+    func profileViewDidTapEditName(_ view: ProfileView) {
+        view.nameTextField.isHidden = false
+        view.buttonsStackView.isHidden = false
+        view.nameTextField.becomeFirstResponder()
+    }
+    
+    func profileViewDidTapSaveName(_ view: ProfileView) {
+        guard let user = Auth.auth().currentUser else { return }
+        let newName = view.nameTextField.text ?? ""
+        
+        db.collection("users").document(user.uid).updateData(["name": newName]) { error in
+            if let error = error {
+                print("Ошибка сохранения имени: \(error)")
+            }
+        }
+        
+        let changeRequest = user.createProfileChangeRequest()
+        changeRequest.displayName = newName
+        changeRequest.commitChanges { error in
+            if let error = error {
+                print("Ошибка обновления displayName: \(error)")
+            }
+        }
+        
+        view.nameLabel.text = "Имя: \(newName)"
+        hideNameEditing()
+    }
+    
+    func profileViewDidTapCancelEdit(_ view: ProfileView) {
+        hideNameEditing()
+    }
+    
+    private func hideNameEditing() {
+        view.endEditing(true)
+        profileView.nameTextField.isHidden = true
+        profileView.buttonsStackView.isHidden = true
     }
 }
