@@ -27,6 +27,7 @@ class MultipleChoiceCell: UITableViewCell {
     }()
     
     private var buttons: [UIButton] = []
+    private var isEditable: Bool = false
     
     var answerSelectionHandler: ((Int) -> Void)?
     
@@ -52,7 +53,9 @@ class MultipleChoiceCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: MultipleChoiceQuestionModel) {
+    func configure(with model: MultipleChoiceQuestionModel, isEditable: Bool) {
+        self.isEditable = isEditable
+        
         questionLabel.text = model.question
         optionsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         buttons.removeAll()
@@ -102,6 +105,7 @@ class MultipleChoiceCell: UITableViewCell {
     }
     
     private func selectOption(at index: Int) {
+        guard isEditable else { return }
         for (i, button) in buttons.enumerated() {
             button.setTitle(i == index ? "●" : "○", for: .normal)
         }

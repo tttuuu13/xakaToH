@@ -17,7 +17,7 @@ final class ExamsListCell: UITableViewCell {
         return label
     }()
     
-    private let statusLabel: UILabel = {
+    private let startDateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .secondaryLabel
@@ -29,25 +29,32 @@ final class ExamsListCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.addSubview(titleLabel)
-        contentView.addSubview(statusLabel)
+        contentView.addSubview(startDateLabel)
         
         selectionStyle = .none
         
         titleLabel.pinTop(to: contentView, 12)
         titleLabel.pinHorizontal(to: contentView)
         
-        statusLabel.pinTop(to: titleLabel.bottomAnchor, 8)
-        statusLabel.pinHorizontal(to: contentView)
-        statusLabel.pinBottom(to: contentView, 12)
+        startDateLabel.pinTop(to: titleLabel.bottomAnchor, 8)
+        startDateLabel.pinHorizontal(to: contentView)
+        startDateLabel.pinBottom(to: contentView, 12)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: QuestionListModel) {
+    func configure(with model: ExamModel) {
         print("\(model.name)")
         titleLabel.text = model.name
-        statusLabel.text = model.status.rawValue
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        //dateFormatter.locale = .autoupdatingCurrent
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        
+        startDateLabel.text = dateFormatter.string(from: model.startTime)
     }
 }

@@ -17,10 +17,10 @@ final class MainViewController: UIViewController {
     
     // MARK: - Properties
     private let contentView = MainView()
-    private var exams: [QuestionListModel] = []
-    private var startedExams: [QuestionListModel] = []
-    private var scheduledExams: [QuestionListModel] = []
-    private var finishedExams: [QuestionListModel] = []
+    private var exams: [ExamModel] = []
+    private var startedExams: [ExamModel] = []
+    private var scheduledExams: [ExamModel] = []
+    private var finishedExams: [ExamModel] = []
     
     // MARK: - Lifecycle
     override func loadView() {
@@ -55,7 +55,7 @@ final class MainViewController: UIViewController {
     private func loadExams() {
         // ВРЕМЕННАЯ ЗАГЛУШКА
         exams = [
-            QuestionListModel(name: "first exam", startTime: Date.now.addingTimeInterval(-3600), status: .started, questions: [
+            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-3600), status: .started, questions: [
                 TextQuestionModel(question: "text question 1"),
                 TextQuestionModel(question: "text question 2"),
                 TextQuestionModel(question: "text question 3"),
@@ -66,7 +66,7 @@ final class MainViewController: UIViewController {
                     "option 4"
                 ])
             ]),
-            QuestionListModel(name: "second exam", startTime: Date.now.addingTimeInterval(-7200), status: .started, questions: [
+            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(-7200), status: .started, questions: [
                 TextQuestionModel(question: "text question 1"),
                 TextQuestionModel(question: "text question 2"),
                 TextQuestionModel(question: "text question 3"),
@@ -77,7 +77,7 @@ final class MainViewController: UIViewController {
                     "option 4"
                 ])
             ]),
-            QuestionListModel(name: "first exam", startTime: Date.now.addingTimeInterval(3600), status: .scheduled, questions: [
+            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(3600), status: .scheduled, questions: [
                 TextQuestionModel(question: "text question 1"),
                 TextQuestionModel(question: "text question 2"),
                 TextQuestionModel(question: "text question 3"),
@@ -88,7 +88,7 @@ final class MainViewController: UIViewController {
                     "option 4"
                 ])
             ]),
-            QuestionListModel(name: "second exam", startTime: Date.now.addingTimeInterval(7200), status: .scheduled, questions: [
+            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(7200), status: .scheduled, questions: [
                 TextQuestionModel(question: "text question 1"),
                 TextQuestionModel(question: "text question 2"),
                 TextQuestionModel(question: "text question 3"),
@@ -99,7 +99,7 @@ final class MainViewController: UIViewController {
                     "option 4"
                 ])
             ]),
-            QuestionListModel(name: "first exam", startTime: Date.now.addingTimeInterval(-36000), status: .finished, questions: [
+            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-36000), status: .finished, questions: [
                 TextQuestionModel(question: "text question 1"),
                 TextQuestionModel(question: "text question 2"),
                 TextQuestionModel(question: "text question 3"),
@@ -110,7 +110,7 @@ final class MainViewController: UIViewController {
                     "option 4"
                 ])
             ]),
-            QuestionListModel(name: "second exam", startTime: Date.now.addingTimeInterval(-72000), status: .finished, questions: [
+            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(-72000), status: .finished, questions: [
                 TextQuestionModel(question: "text question 1"),
                 TextQuestionModel(question: "text question 2"),
                 TextQuestionModel(question: "text question 3"),
@@ -176,7 +176,7 @@ extension MainViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ExamsListCell.reuseIdentifier, for: indexPath)
         guard let examListCell = cell as? ExamsListCell else { return cell }
         
-        let exam: QuestionListModel
+        let exam: ExamModel
         switch indexPath.section {
         case 0: exam = startedExams[indexPath.row]
         case 1: exam = scheduledExams[indexPath.row]
@@ -192,7 +192,7 @@ extension MainViewController: UITableViewDataSource {
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let exam: QuestionListModel
+        let exam: ExamModel
         switch indexPath.section {
         case 0: exam = startedExams[indexPath.row]
         case 1: exam = scheduledExams[indexPath.row]
@@ -201,7 +201,18 @@ extension MainViewController: UITableViewDelegate {
         }
         
         guard exam.status != .scheduled else { return }
-        let questinoListViewController = QuestionListViewController(questionListModel: exam)
-        navigationController?.pushViewController(questinoListViewController, animated: true)
+        let questionListViewController = QuestionListViewController(examModel: exam)
+        questionListViewController.delegate = self
+        navigationController?.pushViewController(questionListViewController, animated: true)
+    }
+}
+
+extension MainViewController: QuestionListViewControllerDelegate {
+    func questionListViewController(_ viewController: QuestionListViewController, didUpdateExam exam: ExamModel, with question: any QuestionProtocol) {
+        guard let examIndex = exams.firstIndex(where: { $0.id == exam.id }) else { return }
+        guard let questionIndex = exams[examIndex].questions.firstIndex(where: { $0.id == question.id }) else { return }
+        
+        exams[examIndex].questions[questionIndex] = question
+        sortExams()
     }
 }
