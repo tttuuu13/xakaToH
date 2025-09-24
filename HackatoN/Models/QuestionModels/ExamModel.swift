@@ -6,9 +6,10 @@
 //
 import Foundation
 
-struct QuestionListModel {
+struct ExamModel {
     let name: String
     let startTime: Date
+    let id: UUID = UUID()
     var status: ExamStatus
     var questions: [QuestionProtocol]
 }

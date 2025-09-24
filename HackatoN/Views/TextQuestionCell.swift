@@ -54,9 +54,10 @@ class TextQuestionCell: UITableViewCell, UITextViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: TextQuestionModel) {
+    func configure(with model: TextQuestionModel, isEditable: Bool) {
         questionLabel.text = model.question
         answerTextView.text = model.answer ?? ""
+        answerTextView.isEditable = isEditable
     }
     
     func textViewDidChange(_ textView: UITextView) {

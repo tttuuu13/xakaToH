@@ -45,7 +45,7 @@ final class ExamsListCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: QuestionListModel) {
+    func configure(with model: ExamModel) {
         print("\(model.name)")
         titleLabel.text = model.name
         
