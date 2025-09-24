@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Foundation
 import Firebase
 import FirebaseAuth
 
@@ -55,70 +56,148 @@ final class MainViewController: UIViewController {
     private func loadExams() {
         // ВРЕМЕННАЯ ЗАГЛУШКА
         exams = [
-            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-3600), status: .started, questions: [
-                TextQuestionModel(question: "text question 1"),
-                TextQuestionModel(question: "text question 2"),
-                TextQuestionModel(question: "text question 3"),
-                MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
-                    "option 1",
-                    "option 2",
-                    "option 3",
-                    "option 4"
+            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-3600), status: .started, sections: [
+                ExamSectionModel(name: "section1", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
+                ]),
+                ExamSectionModel(name: "section2", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
                 ])
             ]),
-            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(-7200), status: .started, questions: [
-                TextQuestionModel(question: "text question 1"),
-                TextQuestionModel(question: "text question 2"),
-                TextQuestionModel(question: "text question 3"),
-                MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
-                    "option 1",
-                    "option 2",
-                    "option 3",
-                    "option 4"
+            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(-7200), status: .started, sections: [
+                ExamSectionModel(name: "section1", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
+                ]),
+                ExamSectionModel(name: "section2", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
                 ])
             ]),
-            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(3600), status: .scheduled, questions: [
-                TextQuestionModel(question: "text question 1"),
-                TextQuestionModel(question: "text question 2"),
-                TextQuestionModel(question: "text question 3"),
-                MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
-                    "option 1",
-                    "option 2",
-                    "option 3",
-                    "option 4"
+            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(3600), status: .scheduled, sections: [
+                ExamSectionModel(name: "section1", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
+                ]),
+                ExamSectionModel(name: "section2", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
                 ])
             ]),
-            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(7200), status: .scheduled, questions: [
-                TextQuestionModel(question: "text question 1"),
-                TextQuestionModel(question: "text question 2"),
-                TextQuestionModel(question: "text question 3"),
-                MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
-                    "option 1",
-                    "option 2",
-                    "option 3",
-                    "option 4"
+            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(7200), status: .scheduled, sections: [
+                ExamSectionModel(name: "section1", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
+                ]),
+                ExamSectionModel(name: "section2", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
                 ])
             ]),
-            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-36000), status: .finished, questions: [
-                TextQuestionModel(question: "text question 1"),
-                TextQuestionModel(question: "text question 2"),
-                TextQuestionModel(question: "text question 3"),
-                MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
-                    "option 1",
-                    "option 2",
-                    "option 3",
-                    "option 4"
+            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-36000), status: .finished, sections: [
+                ExamSectionModel(name: "section1", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
+                ]),
+                ExamSectionModel(name: "section2", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
                 ])
             ]),
-            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(-72000), status: .finished, questions: [
-                TextQuestionModel(question: "text question 1"),
-                TextQuestionModel(question: "text question 2"),
-                TextQuestionModel(question: "text question 3"),
-                MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
-                    "option 1",
-                    "option 2",
-                    "option 3",
-                    "option 4"
+            ExamModel(name: "second exam", startTime: Date.now.addingTimeInterval(-72000), status: .finished, sections: [
+                ExamSectionModel(name: "section1", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
+                ]),
+                ExamSectionModel(name: "section2", questions: [
+                    TextQuestionModel(question: "text question 1"),
+                    TextQuestionModel(question: "text question 2"),
+                    TextQuestionModel(question: "text question 3"),
+                    MultipleChoiceQuestionModel(question: "multiple options question 4", options: [
+                        "option 1",
+                        "option 2",
+                        "option 3",
+                        "option 4"
+                    ])
                 ])
             ])
         ]
@@ -208,11 +287,12 @@ extension MainViewController: UITableViewDelegate {
 }
 
 extension MainViewController: QuestionListViewControllerDelegate {
-    func questionListViewController(_ viewController: QuestionListViewController, didUpdateExam exam: ExamModel, with question: any QuestionProtocol) {
+    func questionListViewController(_ viewController: QuestionListViewController, didUpdateExam exam: ExamModel, with question: any QuestionProtocol, at sectionId: UUID) {
         guard let examIndex = exams.firstIndex(where: { $0.id == exam.id }) else { return }
-        guard let questionIndex = exams[examIndex].questions.firstIndex(where: { $0.id == question.id }) else { return }
+        guard let sectionIndex = exams[examIndex].sections.firstIndex(where: { $0.id == sectionId }) else { return }
+        guard let questionIndex = exams[examIndex].sections[sectionIndex].questions.firstIndex(where: { $0.id == question.id }) else { return }
         
-        exams[examIndex].questions[questionIndex] = question
+        exams[examIndex].sections[sectionIndex].questions[questionIndex] = question
         sortExams()
     }
 }

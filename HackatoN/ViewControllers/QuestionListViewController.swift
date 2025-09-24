@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Foundation
 
 protocol QuestionListViewControllerDelegate: AnyObject {
-    func questionListViewController(_ viewController: QuestionListViewController, didUpdateExam exam: ExamModel, with question: QuestionProtocol)
+    func questionListViewController(_ viewController: QuestionListViewController, didUpdateExam exam: ExamModel, with question: QuestionProtocol, at sectionId: UUID)
 }
 
 class QuestionListViewController: UIViewController {
@@ -53,19 +54,27 @@ class QuestionListViewController: UIViewController {
 // MARK: - UITableViewDataSource
 extension QuestionListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return examModel.status == .started ? 2 : 1
+        return examModel.status == .started ? examModel.sections.count + 1 : examModel.sections.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return examModel.questions.count
-        case 1: return 1
+        case 0..<examModel.sections.count: return examModel.sections[section].questions.count
+        case examModel.sections.count: return 1
         default: return 0
         }
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0..<examModel.sections.count: return examModel.sections[section].name
+        case examModel.sections.count: return nil
+        default: return nil
+        }
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 1 {
+        if indexPath.section == examModel.sections.count {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: EndExamCell.reuseIdentifier,
                 for: indexPath
@@ -75,7 +84,7 @@ extension QuestionListViewController: UITableViewDataSource {
             return cell
         }
         
-        let question = examModel.questions[indexPath.row]
+        let question = examModel.sections[indexPath.section].questions[indexPath.row]
         
         switch question {
         case let textQuestion as TextQuestionModel:
@@ -88,10 +97,11 @@ extension QuestionListViewController: UITableViewDataSource {
             cell.configure(with: textQuestion, isEditable: examModel.status == .started)
             cell.asnwerChanged = { [weak self] newText in
                 guard let self = self else { return }
-                let question = self.examModel.questions[indexPath.row]
+                let section = self.examModel.sections[indexPath.section]
+                let question = section.questions[indexPath.row]
                 guard case var questionModel as TextQuestionModel = question else { return }
                 questionModel.answer = newText
-                delegate?.questionListViewController(self, didUpdateExam: examModel, with: questionModel)
+                delegate?.questionListViewController(self, didUpdateExam: examModel, with: questionModel, at: section.id)
             }
             return cell
             
@@ -105,10 +115,11 @@ extension QuestionListViewController: UITableViewDataSource {
             cell.configure(with: mcQuestion, isEditable: examModel.status == .started)
             cell.answerSelectionHandler = { [weak self] selecterdOption in
                 guard let self = self else { return }
-                let question = self.examModel.questions[indexPath.row]
+                let section = self.examModel.sections[indexPath.section]
+                let question = section.questions[indexPath.row]
                 guard case var questionModel as MultipleChoiceQuestionModel = question else { return }
                 questionModel.answer = selecterdOption
-                delegate?.questionListViewController(self, didUpdateExam: examModel, with: questionModel)
+                delegate?.questionListViewController(self, didUpdateExam: examModel, with: questionModel, at: section.id)
             }
             return cell
             
