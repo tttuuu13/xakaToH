@@ -1,12 +1,12 @@
 //
-//  MultipleChoiceQuestionModel.swift
+//  MCQuestionModel.swift
 //  HackatoN
 //
 //  Created by Nick on 20.09.2025.
 //
 import Foundation
 
-struct MultipleChoiceQuestionModel: QuestionProtocol {
+struct MCQuestionModel: QuestionProtocol {
     let id: UUID = UUID()
     let question: String
     let options: [String]

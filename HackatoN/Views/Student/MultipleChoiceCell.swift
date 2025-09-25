@@ -53,7 +53,7 @@ class MultipleChoiceCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: MultipleChoiceQuestionModel, isEditable: Bool) {
+    func configure(with model: MCQuestionModel, isEditable: Bool) {
         self.isEditable = isEditable
         
         questionLabel.text = model.question

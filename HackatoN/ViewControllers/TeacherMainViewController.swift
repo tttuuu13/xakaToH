@@ -107,8 +107,9 @@ final class TeacherMainViewController: UIViewController {
 // MARK: - TeacherMainViewDelegate
 extension TeacherMainViewController: TeacherMainViewDelegate {
     func teacherMainViewDidTapCreateQuiz(_ view: TeacherMainView) {
-        let createQuizVC = CreateQuizViewController()
-        let navController = UINavigationController(rootViewController: createQuizVC)
+        //let createQuizVC = CreateQuizViewController()
+        let createExamVC = CreateExamViewController()
+        let navController = UINavigationController(rootViewController: createExamVC)
         present(navController, animated: true)
     }
     
