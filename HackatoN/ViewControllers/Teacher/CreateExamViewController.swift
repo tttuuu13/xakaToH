@@ -33,7 +33,10 @@ class CreateExamViewController: UIViewController, CreateExamViewDelegate {
     // MARK: - Actions
     func createSection() {
         editableExamModel.sections.append(EditableExamSectionModel())
-        contentView.reloadData()
+        
+        contentView.tableBeginUpdates()
+        contentView.tableInsertSections(IndexSet(integer: editableExamModel.sections.count - 1), with: .automatic)
+        contentView.tableEndUpdates()
     }
     
     private func renameSection(at index: Int, with name: String) {
@@ -109,13 +112,20 @@ extension CreateExamViewController: UITableViewDelegate {
 }
 
 extension CreateExamViewController: AddQuestionCellDelegate {
+    private func addRow(in section: Int) {
+        let newIndexPath = IndexPath(row: editableExamModel.sections[section].questions.count - 1, section: section)
+        contentView.tableBeginUpdates()
+        contentView.tableInsertRows(at: [newIndexPath], with: .automatic)
+        contentView.tableEndUpdates()
+    }
+    
     func addTextQuestionButtonTapped(in section: Int) {
         editableExamModel.sections[section].questions.append(EditableTextQuestionModel())
-        contentView.reloadData()
+        addRow(in: section)
     }
     
     func addMCQuestionButtonTapped(in section: Int) {
         editableExamModel.sections[section].questions.append(EditableMCQuestionModel())
-        contentView.reloadData()
+        addRow(in: section)
     }
 }

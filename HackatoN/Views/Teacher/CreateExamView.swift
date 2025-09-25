@@ -77,4 +77,20 @@ class CreateExamView: UIView {
     func reloadData() {
         tableView.reloadData()
     }
+    
+    func tableBeginUpdates() {
+        tableView.beginUpdates()
+    }
+    
+    func tableEndUpdates() {
+        tableView.endUpdates()
+    }
+    
+    func tableInsertRows(at indexPathes: [IndexPath], with animation: UITableView.RowAnimation) {
+        tableView.insertRows(at: indexPathes, with: animation)
+    }
+    
+    func tableInsertSections(_ sections: IndexSet, with animation: UITableView.RowAnimation) {
+        tableView.insertSections(sections, with: animation)
+    }
 }
