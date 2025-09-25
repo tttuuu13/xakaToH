@@ -94,11 +94,8 @@ extension CreateExamViewController: UITableViewDataSource {
             guard let mcQuestionCell = cell as? EditableMCQuestionCell else { return cell }
             
             mcQuestionCell.configure(with: MCQuestion)
-            mcQuestionCell.questionChanged = { [weak self] newQuestion, isReloadNeeded in
+            mcQuestionCell.questionChanged = { [weak self] newQuestion in
                 self?.changeQuestion(in: indexPath, with: newQuestion)
-                if isReloadNeeded {
-                    self?.contentView.reloadData()
-                }
             }
             return mcQuestionCell
             

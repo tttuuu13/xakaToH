@@ -11,7 +11,7 @@ class EditableMCQuestionCell: UITableViewCell {
     
     // MARK: - properties
     static let reuseIdentifier = "EditableMCQuestionCell"
-    var questionChanged: ((EditableQuestionProtocol, Bool) -> Void)?
+    var questionChanged: ((EditableQuestionProtocol) -> Void)?
     private var question: EditableMCQuestionModel?
     private var optionsTableViewHeightConstraint: NSLayoutConstraint?
     
@@ -89,11 +89,23 @@ class EditableMCQuestionCell: UITableViewCell {
         
         optionsTableViewHeightConstraint = optionsTableView.heightAnchor.constraint(equalToConstant: 0)
         optionsTableViewHeightConstraint?.isActive = true
+        
+        selectionStyle = .none
     }
     
+    // MARK: - update tableView height
     private func updateOptionsTableViewHeight() {
         optionsTableView.layoutIfNeeded()
         optionsTableViewHeightConstraint?.constant = optionsTableView.contentSize.height
+    }
+    
+    private func resizeOuterTableView() {
+        updateOptionsTableViewHeight()
+        guard let tableView = self.superview as? UITableView else { return }
+        UIView.setAnimationsEnabled(false)
+        tableView.beginUpdates()
+        tableView.endUpdates()
+        UIView.setAnimationsEnabled(true)
     }
     
     func configure(with question: EditableMCQuestionModel) {
@@ -108,7 +120,10 @@ class EditableMCQuestionCell: UITableViewCell {
     private func addOption() {
         guard var question = self.question else { return }
         question.options.append("")
-        questionChanged?(question, true)
+        self.question = question
+        questionChanged?(question)
+        optionsTableView.reloadData()
+        resizeOuterTableView()
     }
 }
 
@@ -124,15 +139,11 @@ extension EditableMCQuestionCell: UITableViewDataSource {
         optionCell.optionChanged = { [weak self] newOption in
             guard var question = self?.question else { return }
             question.options[indexPath.row] = newOption
-            self?.questionChanged?(question, false)
+            self?.question = question
+            self?.questionChanged?(question)
         }
         optionCell.needResizeOuterTableView = { [weak self] in
-            self?.updateOptionsTableViewHeight()
-            guard let tableView = self?.superview as? UITableView else { return }
-            UIView.setAnimationsEnabled(false)
-            tableView.beginUpdates()
-            tableView.endUpdates()
-            UIView.setAnimationsEnabled(true)
+            self?.resizeOuterTableView()
         }
         return optionCell
     }
@@ -146,7 +157,8 @@ extension EditableMCQuestionCell: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         guard var question = question else { return }
         question.question = textView.text
-        questionChanged?(question, false)
+        self.question = question
+        questionChanged?(question)
         
         if let tableView = superview as? UITableView {
             UIView.setAnimationsEnabled(false)
