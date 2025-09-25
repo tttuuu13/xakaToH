@@ -81,7 +81,7 @@ class EditableMCQuestionCell: UITableViewCell {
         
         optionsTableView.pinTop(to: questionTextView.bottomAnchor, 5)
         optionsTableView.pinHorizontal(to: contentView, 5)
-        optionsTableView.backgroundColor = .green
+        optionsTableView.backgroundColor = .systemBackground
         
         addOptionButton.pinTop(to: optionsTableView.bottomAnchor, 5)
         addOptionButton.pinHorizontal(to: contentView, 5)
@@ -122,7 +122,12 @@ class EditableMCQuestionCell: UITableViewCell {
         question.options.append("")
         self.question = question
         questionChanged?(question)
-        optionsTableView.reloadData()
+        
+        let newIndexPath = IndexPath(row: question.options.count - 1, section: 0)
+        optionsTableView.beginUpdates()
+        optionsTableView.insertRows(at: [newIndexPath], with: .automatic)
+        optionsTableView.endUpdates()
+        
         resizeOuterTableView()
     }
 }
