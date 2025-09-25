@@ -69,6 +69,7 @@ class CreateExamView: UIView {
         tableView.delegate = delegate
         tableView.dataSource = dataSource
         tableView.register(EditableTextQuestionCell.self, forCellReuseIdentifier: EditableTextQuestionCell.reuseIdentifier)
+        tableView.register(EditableMCQuestionCell.self, forCellReuseIdentifier: EditableMCQuestionCell.reuseIdentifier)
         tableView.register(AddQuestionCell.self, forCellReuseIdentifier: AddQuestionCell.reuseIdentifier)
         tableView.rowHeight = UITableView.automaticDimension
     }

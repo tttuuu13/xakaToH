@@ -53,6 +53,7 @@ class CreateExamViewController: UIViewController, CreateExamViewDelegate {
     
     private func changeQuestion(in indexPath: IndexPath, with question: EditableQuestionProtocol) {
         editableExamModel.sections[indexPath.section].questions[indexPath.row] = question
+        contentView.reloadData()
     }
 }
 
@@ -76,14 +77,31 @@ extension CreateExamViewController: UITableViewDataSource {
             return addQuestionCell
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: EditableTextQuestionCell.reuseIdentifier, for: indexPath)
-        guard let editableTextQuestionCell = cell as? EditableTextQuestionCell else { return cell }
+        let question = editableExamModel.sections[indexPath.section].questions[indexPath.row]
         
-        editableTextQuestionCell.configute(with: editableExamModel.sections[indexPath.section].questions[indexPath.row].question)
-        editableTextQuestionCell.questionChanged = { [weak self] newQuestion in
-            self?.changeQuestion(in: indexPath, with: newQuestion)
+        switch question {
+        case let textQuestion as EditableTextQuestionModel:
+            let cell = tableView.dequeueReusableCell(withIdentifier: EditableTextQuestionCell.reuseIdentifier, for: indexPath)
+            guard let textQuestionCell = cell as? EditableTextQuestionCell else { return cell }
+            
+            textQuestionCell.configute(with: textQuestion.question)
+            textQuestionCell.questionChanged = { [weak self] newQuestion in
+                self?.changeQuestion(in: indexPath, with: newQuestion)
+            }
+            return textQuestionCell
+            
+        case let MCQuestion as EditableMCQuestionModel:
+            let cell = tableView.dequeueReusableCell(withIdentifier: EditableMCQuestionCell.reuseIdentifier, for: indexPath)
+            guard let mcQuestionCell = cell as? EditableMCQuestionCell else { return cell }
+            
+            mcQuestionCell.configure(with: MCQuestion)
+            mcQuestionCell.questionChanged = { [weak self] newQuestion in
+                self?.changeQuestion(in: indexPath, with: newQuestion)
+            }
+            return mcQuestionCell
+            
+        default: return UITableViewCell()
         }
-        return editableTextQuestionCell
     }
 }
 
@@ -95,7 +113,6 @@ extension CreateExamViewController: AddQuestionCellDelegate {
     func addTextQuestionButtonTapped(in section: Int) {
         editableExamModel.sections[section].questions.append(EditableTextQuestionModel())
         contentView.reloadData()
-        print("added text question")
     }
     
     func addMCQuestionButtonTapped(in section: Int) {
