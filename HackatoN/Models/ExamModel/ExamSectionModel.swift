@@ -9,6 +9,6 @@ import Foundation
 
 struct ExamSectionModel {
     let id: UUID = UUID()
-    var name: String
+    let name: String
     var questions: [QuestionProtocol]
 }

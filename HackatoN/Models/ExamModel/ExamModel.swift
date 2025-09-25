@@ -7,9 +7,9 @@
 import Foundation
 
 struct ExamModel {
+    let id: UUID = UUID()
     let name: String
     let startTime: Date
-    let id: UUID = UUID()
     var status: ExamStatus
     var sections: [ExamSectionModel]
 }

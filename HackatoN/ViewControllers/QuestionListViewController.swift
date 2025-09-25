@@ -105,7 +105,7 @@ extension QuestionListViewController: UITableViewDataSource {
             }
             return cell
             
-        case let mcQuestion as MultipleChoiceQuestionModel:
+        case let mcQuestion as MCQuestionModel:
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: MultipleChoiceCell.reuseIdentifier,
                 for: indexPath
@@ -117,7 +117,7 @@ extension QuestionListViewController: UITableViewDataSource {
                 guard let self = self else { return }
                 let section = self.examModel.sections[indexPath.section]
                 let question = section.questions[indexPath.row]
-                guard case var questionModel as MultipleChoiceQuestionModel = question else { return }
+                guard case var questionModel as MCQuestionModel = question else { return }
                 questionModel.answer = selecterdOption
                 delegate?.questionListViewController(self, didUpdateExam: examModel, with: questionModel, at: section.id)
             }

@@ -62,5 +62,12 @@ class TextQuestionCell: UITableViewCell, UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         asnwerChanged?(textView.text)
+        
+        if let tableView = superview as? UITableView {
+            UIView.setAnimationsEnabled(false)
+            tableView.beginUpdates()
+            tableView.endUpdates()
+            UIView.setAnimationsEnabled(true)
+        }
     }
 }
