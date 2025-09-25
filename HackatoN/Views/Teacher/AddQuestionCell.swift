@@ -14,11 +14,12 @@ protocol AddQuestionCellDelegate {
 
 class AddQuestionCell: UITableViewCell {
     
+    // MARK: - properties
     static let reuseIdentifier = "AddQuestionCell"
     var delegate: AddQuestionCellDelegate?
     private var section: Int?
     
-    
+    // MARK: - UI
     private let addTextQuestionButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Текстовый вопрос", for: .normal)
@@ -37,6 +38,7 @@ class AddQuestionCell: UITableViewCell {
         return button
     }()
     
+    // MARK: - init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -56,12 +58,23 @@ class AddQuestionCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - private
+    @objc
+    private func addTextQuestionButtonTapped() {
+        guard let section = self.section else { return }
+        self.delegate?.addTextQuestionButtonTapped(in: section)
+    }
+    
+    @objc
+    private func addMCQuestionButtonTapped() {
+        guard let section = self.section else { return }
+        self.delegate?.addMCQuestionButtonTapped(in: section)
+    }
+    
+    // MARK: - public API
     func configure(with section: Int) {
-        addTextQuestionButton.addAction(UIAction { [weak self] _ in
-            self?.delegate?.addTextQuestionButtonTapped(in: section)
-        }, for: .touchUpInside)
-        addMCQuestionButton.addAction(UIAction { [weak self] _ in
-            self?.delegate?.addMCQuestionButtonTapped(in: section)
-        }, for: .touchUpInside)
+        self.section = section
+        addTextQuestionButton.addTarget(self, action: #selector(addTextQuestionButtonTapped), for: .touchUpInside)
+        addMCQuestionButton.addTarget(self, action: #selector(addMCQuestionButtonTapped), for: .touchUpInside)
     }
 }

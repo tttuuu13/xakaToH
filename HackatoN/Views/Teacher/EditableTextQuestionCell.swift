@@ -11,7 +11,7 @@ final class EditableTextQuestionCell: UITableViewCell, UITextViewDelegate {
     
     // MARK: - properties
     static let reuseIdentifier = "EditableTextQuestionCell"
-    var questionChanged: ((String) -> Void)?
+    var questionChanged: ((EditableQuestionProtocol) -> Void)?
     
     // MARK: - UI
     private let label: UILabel = {
@@ -60,7 +60,7 @@ final class EditableTextQuestionCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        questionChanged?(textView.text)
+        questionChanged?(EditableTextQuestionModel(question: textView.text))
         
         if let tableView = superview as? UITableView {
             UIView.setAnimationsEnabled(false)

@@ -50,6 +50,10 @@ class CreateExamViewController: UIViewController, CreateExamViewDelegate {
         guard sectionIndex >= 0 && sectionIndex < editableExamModel.sections.count else { return }
         editableExamModel.sections[sectionIndex].questions.append(EditableMCQuestionModel())
     }
+    
+    private func changeQuestion(in indexPath: IndexPath, with question: EditableQuestionProtocol) {
+        editableExamModel.sections[indexPath.section].questions[indexPath.row] = question
+    }
 }
 
 extension CreateExamViewController: UITableViewDataSource {
@@ -76,6 +80,9 @@ extension CreateExamViewController: UITableViewDataSource {
         guard let editableTextQuestionCell = cell as? EditableTextQuestionCell else { return cell }
         
         editableTextQuestionCell.configute(with: editableExamModel.sections[indexPath.section].questions[indexPath.row].question)
+        editableTextQuestionCell.questionChanged = { [weak self] newQuestion in
+            self?.changeQuestion(in: indexPath, with: newQuestion)
+        }
         return editableTextQuestionCell
     }
 }
@@ -86,7 +93,7 @@ extension CreateExamViewController: UITableViewDelegate {
 
 extension CreateExamViewController: AddQuestionCellDelegate {
     func addTextQuestionButtonTapped(in section: Int) {
-        editableExamModel.sections[section].questions.append(EditableMCQuestionModel())
+        editableExamModel.sections[section].questions.append(EditableTextQuestionModel())
         contentView.reloadData()
         print("added text question")
     }
