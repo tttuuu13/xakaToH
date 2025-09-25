@@ -11,7 +11,7 @@ class EditableMCQuestionCell: UITableViewCell {
     
     // MARK: - properties
     static let reuseIdentifier = "EditableMCQuestionCell"
-    var questionChanged: ((EditableQuestionProtocol) -> Void)?
+    var questionChanged: ((EditableQuestionProtocol, Bool) -> Void)?
     private var question: EditableMCQuestionModel?
     private var optionsTableViewHeightConstraint: NSLayoutConstraint?
     
@@ -108,7 +108,7 @@ class EditableMCQuestionCell: UITableViewCell {
     private func addOption() {
         guard var question = self.question else { return }
         question.options.append("")
-        questionChanged?(question)
+        questionChanged?(question, true)
     }
 }
 
@@ -121,6 +121,19 @@ extension EditableMCQuestionCell: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: MCQuestionOptionEditCell.reuseIdentifier, for: indexPath)
         guard let optionCell = cell as? MCQuestionOptionEditCell else { return cell }
         optionCell.configute(with: question?.options[indexPath.row] ?? "")
+        optionCell.optionChanged = { [weak self] newOption in
+            guard var question = self?.question else { return }
+            question.options[indexPath.row] = newOption
+            self?.questionChanged?(question, false)
+        }
+        optionCell.needResizeOuterTableView = { [weak self] in
+            self?.updateOptionsTableViewHeight()
+            guard let tableView = self?.superview as? UITableView else { return }
+            UIView.setAnimationsEnabled(false)
+            tableView.beginUpdates()
+            tableView.endUpdates()
+            UIView.setAnimationsEnabled(true)
+        }
         return optionCell
     }
 }
@@ -133,7 +146,7 @@ extension EditableMCQuestionCell: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         guard var question = question else { return }
         question.question = textView.text
-        questionChanged?(question)
+        questionChanged?(question, false)
         
         if let tableView = superview as? UITableView {
             UIView.setAnimationsEnabled(false)

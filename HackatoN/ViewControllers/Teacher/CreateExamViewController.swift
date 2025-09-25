@@ -53,7 +53,6 @@ class CreateExamViewController: UIViewController, CreateExamViewDelegate {
     
     private func changeQuestion(in indexPath: IndexPath, with question: EditableQuestionProtocol) {
         editableExamModel.sections[indexPath.section].questions[indexPath.row] = question
-        contentView.reloadData()
     }
 }
 
@@ -95,8 +94,11 @@ extension CreateExamViewController: UITableViewDataSource {
             guard let mcQuestionCell = cell as? EditableMCQuestionCell else { return cell }
             
             mcQuestionCell.configure(with: MCQuestion)
-            mcQuestionCell.questionChanged = { [weak self] newQuestion in
+            mcQuestionCell.questionChanged = { [weak self] newQuestion, isReloadNeeded in
                 self?.changeQuestion(in: indexPath, with: newQuestion)
+                if isReloadNeeded {
+                    self?.contentView.reloadData()
+                }
             }
             return mcQuestionCell
             

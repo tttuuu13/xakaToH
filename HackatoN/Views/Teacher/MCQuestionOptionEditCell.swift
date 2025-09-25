@@ -12,6 +12,7 @@ class MCQuestionOptionEditCell: UITableViewCell, UITextViewDelegate {
     // MARK: - properties
     static let reuseIdentifier = "MCQuestionOptionEditCell"
     var optionChanged: ((String) -> Void)?
+    var needResizeOuterTableView: (() -> Void)?
     
     // MARK: - UI
     private let label: UILabel = {
@@ -67,6 +68,7 @@ class MCQuestionOptionEditCell: UITableViewCell, UITextViewDelegate {
             tableView.beginUpdates()
             tableView.endUpdates()
             UIView.setAnimationsEnabled(true)
+            needResizeOuterTableView?()
         }
     }
 }
