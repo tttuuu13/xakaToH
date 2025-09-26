@@ -12,4 +12,10 @@ class MockFirebaseDataManager {
         print("exam sent to firebase")
         //throw NSError(domain: "", code: 0, userInfo: nil)
     }
+    
+    func getExamsFromFirebase() async throws -> [ExamModel] {
+        sleep(1)
+        return MockExamProvider.provide()
+        //throw NSError(domain: "", code: 0, userInfo: nil)
+    }
 }
