@@ -62,6 +62,11 @@
 			path = Firebase;
 			sourceTree = "<group>";
 		};
+		01986CD32E86E1140077513B /* Mock */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Mock;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +104,7 @@
 		0128F04F2E7ED20B00B44DB8 /* HackatoN */ = {
 			isa = PBXGroup;
 			children = (
+				01986CD32E86E1140077513B /* Mock */,
 				0144FBA92E814B3900A720EA /* Firebase */,
 				0144FAD72E7EDF1D00A720EA /* App */,
 				0144FAD52E7EDE9D00A720EA /* Views */,
@@ -131,6 +137,7 @@
 				0144FAD52E7EDE9D00A720EA /* Views */,
 				0144FAD72E7EDF1D00A720EA /* App */,
 				0144FBA92E814B3900A720EA /* Firebase */,
+				01986CD32E86E1140077513B /* Mock */,
 			);
 			name = HackatoN;
 			packageProductDependencies = (

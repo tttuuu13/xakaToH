@@ -18,6 +18,11 @@ class CreateExamTableHeader: UITableViewHeaderFooterView {
     static let reuseIdentifier: String = "CreateExamTableHeader"
     var delegate: CreateExamTableHeaderDelegate?
     private(set) var sectionId: UUID?
+    var isOnlyOneSection: Bool = false {
+        didSet {
+            deleteSectionButton.isEnabled = !isOnlyOneSection
+        }
+    }
     
     // MARK: - UI
     private let label: UILabel = {
@@ -42,6 +47,7 @@ class CreateExamTableHeader: UITableViewHeaderFooterView {
         let button = UIButton()
         button.setTitle("Удалить секцию", for: .normal)
         button.setTitleColor(.systemRed, for: .normal)
+        button.setTitleColor(.systemGray, for: .disabled)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         return button
     }()

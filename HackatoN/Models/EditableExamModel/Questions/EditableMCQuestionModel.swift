@@ -11,4 +11,8 @@ struct EditableMCQuestionModel: EditableQuestionProtocol {
     let id: UUID = UUID()
     var question: String = ""
     var options: [String] = []
+    
+    func createMCQuestion() -> MCQuestionModel {
+        MCQuestionModel(question: question, options: options)
+    }
 }
