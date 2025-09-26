@@ -8,5 +8,6 @@
 import Foundation
 
 protocol EditableQuestionProtocol {
+    var id: UUID { get }
     var question: String { get set }
 }

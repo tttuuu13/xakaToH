@@ -7,17 +7,17 @@
 
 import UIKit
 
-protocol AddQuestionCellDelegate {
-    func addTextQuestionButtonTapped(in section: Int)
-    func addMCQuestionButtonTapped(in section: Int)
+protocol CreateExamTableFooterDelegate {
+    func addTextQuestionButtonTapped(in sectionId: UUID)
+    func addMCQuestionButtonTapped(in sectionId: UUID)
 }
 
-class AddQuestionCell: UITableViewCell {
+class CreateExamTableFooter: UITableViewHeaderFooterView {
     
     // MARK: - properties
     static let reuseIdentifier = "AddQuestionCell"
-    var delegate: AddQuestionCellDelegate?
-    private var section: Int?
+    var delegate: CreateExamTableFooterDelegate?
+    private var section: UUID?
     
     // MARK: - UI
     private let addTextQuestionButton: UIButton = {
@@ -38,24 +38,30 @@ class AddQuestionCell: UITableViewCell {
         return button
     }()
     
+    private let stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.spacing = 3
+        return stackView
+    }()
+    
     // MARK: - init
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        contentView.addSubview(addTextQuestionButton)
-        contentView.addSubview(addMCQuestionButton)
-        selectionStyle = .none
-        
-        addTextQuestionButton.pinVertical(to: contentView, 3)
-        addMCQuestionButton.pinVertical(to: contentView, 3)
-        
-        addTextQuestionButton.pinLeft(to: contentView, 3)
-        addMCQuestionButton.pinLeft(to: addTextQuestionButton.trailingAnchor, 5)
-        addMCQuestionButton.pinRight(to: contentView, 3)
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        configureUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - configuration
+    private func configureUI() {
+        contentView.addSubview(stackView)
+        stackView.addArrangedSubview(addTextQuestionButton)
+        stackView.addArrangedSubview(addMCQuestionButton)
+        stackView.pin(to: contentView)
     }
     
     // MARK: - private
@@ -72,8 +78,8 @@ class AddQuestionCell: UITableViewCell {
     }
     
     // MARK: - public API
-    func configure(with section: Int) {
-        self.section = section
+    func configure(with sectionId: UUID) {
+        self.section = sectionId
         addTextQuestionButton.addTarget(self, action: #selector(addTextQuestionButtonTapped), for: .touchUpInside)
         addMCQuestionButton.addTarget(self, action: #selector(addMCQuestionButtonTapped), for: .touchUpInside)
     }

@@ -8,6 +8,7 @@
 import Foundation
 
 struct EditableMCQuestionModel: EditableQuestionProtocol {
+    let id: UUID = UUID()
     var question: String = ""
     var options: [String] = []
 }
