@@ -17,8 +17,8 @@ class TextQuestionCell: UITableViewCell, UITextViewDelegate {
         return label
     }()
     
-    private let answerTextView: UITextView = {
-        let textView = UITextView()
+    private let answerTextView: NoPasteTextView = {
+        let textView = NoPasteTextView()
         textView.font = .systemFont(ofSize: 15)
         textView.isScrollEnabled = false
         textView.layer.borderWidth = 1
