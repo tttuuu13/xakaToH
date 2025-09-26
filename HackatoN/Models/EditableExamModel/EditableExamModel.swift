@@ -8,6 +8,7 @@
 import Foundation
 
 struct EditableExamModel {
+    let id: UUID = UUID()
     var name: String = ""
     var startTime: Date = Date.now
     var sections: [EditableExamSectionModel] = []
