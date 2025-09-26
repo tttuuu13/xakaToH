@@ -18,6 +18,7 @@ final class MainViewController: UIViewController {
     
     // MARK: - Properties
     private let contentView = MainView()
+    private let firebaseManager = MockFirebaseDataManager()
     private var exams: [ExamModel] = []
     private var startedExams: [ExamModel] = []
     private var scheduledExams: [ExamModel] = []
@@ -32,7 +33,6 @@ final class MainViewController: UIViewController {
         super.viewDidLoad()
         setupController()
         loadExams()
-        sortExams()
     }
     
     // MARK: - Setup
@@ -54,8 +54,18 @@ final class MainViewController: UIViewController {
     
     // MARK: - Data
     private func loadExams() {
-        // ВРЕМЕННАЯ ЗАГЛУШКА
-        exams = MockExamProvider.provide()
+        Task {
+            do {
+                exams = try await firebaseManager.getExamsFromFirebase()
+                await MainActor.run {
+                    sortExams()
+                    contentView.reloadData()
+                }
+            } catch {
+                print("Ошибка загрузки экзаменов: \(error.localizedDescription)")
+                // Здесь можно показать alert с ошибкой
+            }
+        }
     }
     
     private func sortExams() {
