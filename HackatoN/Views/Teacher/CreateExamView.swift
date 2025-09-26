@@ -70,7 +70,7 @@ class CreateExamView: UIView {
         tableView.dataSource = dataSource
         tableView.register(EditableTextQuestionCell.self, forCellReuseIdentifier: EditableTextQuestionCell.reuseIdentifier)
         tableView.register(EditableMCQuestionCell.self, forCellReuseIdentifier: EditableMCQuestionCell.reuseIdentifier)
-        tableView.register(AddQuestionCell.self, forCellReuseIdentifier: AddQuestionCell.reuseIdentifier)
+        tableView.register(CreateExamTableFooter.self, forHeaderFooterViewReuseIdentifier: CreateExamTableFooter.reuseIdentifier)
         tableView.register(CreateExamTableHeader.self, forHeaderFooterViewReuseIdentifier: CreateExamTableHeader.reuseIdentifier)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.sectionHeaderHeight = UITableView.automaticDimension

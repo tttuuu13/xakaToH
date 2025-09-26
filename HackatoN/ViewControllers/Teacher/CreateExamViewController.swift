@@ -69,19 +69,11 @@ extension CreateExamViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return editableExamModel.sections[section].questions.count + 1
+        return editableExamModel.sections[section].questions.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard indexPath.section < editableExamModel.sections.count else { return UITableViewCell() }
-        
-        if indexPath.row == editableExamModel.sections[indexPath.section].questions.count {
-            let cell = tableView.dequeueReusableCell(withIdentifier: AddQuestionCell.reuseIdentifier, for: indexPath)
-            guard let addQuestionCell = cell as? AddQuestionCell else { return cell }
-            addQuestionCell.delegate = self
-            addQuestionCell.configure(with: indexPath.section)
-            return addQuestionCell
-        }
         
         let question = editableExamModel.sections[indexPath.section].questions[indexPath.row]
         let sectionId = editableExamModel.sections[indexPath.section].id
@@ -118,6 +110,14 @@ extension CreateExamViewController: UITableViewDataSource {
         headerView.delegate = self
         return headerView
     }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CreateExamTableFooter.reuseIdentifier) as? CreateExamTableFooter else { return nil }
+        let sectionId = editableExamModel.sections[section].id
+        footerView.configure(with: sectionId)
+        footerView.delegate = self
+        return footerView
+    }
 }
 
 extension CreateExamViewController: UITableViewDelegate {
@@ -137,22 +137,28 @@ extension CreateExamViewController: CreateExamTableHeaderDelegate {
     }
 }
 
-extension CreateExamViewController: AddQuestionCellDelegate {
-    private func addRow(in section: Int) {
-        let newIndexPath = IndexPath(row: editableExamModel.sections[section].questions.count - 1, section: section)
+extension CreateExamViewController: CreateExamTableFooterDelegate {
+    private func addRow(in sectionId: UUID) {
+        guard let sectionIndex = editableExamModel.sections.firstIndex(where: { $0.id == sectionId }) else { return }
+        
+        let newIndexPath = IndexPath(row: editableExamModel.sections[sectionIndex].questions.count - 1, section: sectionIndex)
         contentView.tableView.beginUpdates()
         contentView.tableView.insertRows(at: [newIndexPath], with: .automatic)
         contentView.tableView.endUpdates()
     }
     
-    func addTextQuestionButtonTapped(in section: Int) {
-        editableExamModel.sections[section].questions.append(EditableTextQuestionModel())
-        addRow(in: section)
+    func addTextQuestionButtonTapped(in sectionId: UUID) {
+        guard let sectionIndex = editableExamModel.sections.firstIndex(where: { $0.id == sectionId }) else { return }
+        
+        editableExamModel.sections[sectionIndex].questions.append(EditableTextQuestionModel())
+        addRow(in: sectionId)
     }
     
-    func addMCQuestionButtonTapped(in section: Int) {
-        editableExamModel.sections[section].questions.append(EditableMCQuestionModel())
-        addRow(in: section)
+    func addMCQuestionButtonTapped(in sectionId: UUID) {
+        guard let sectionIndex = editableExamModel.sections.firstIndex(where: { $0.id == sectionId }) else { return }
+        
+        editableExamModel.sections[sectionIndex].questions.append(EditableMCQuestionModel())
+        addRow(in: sectionId)
     }
 }
 
