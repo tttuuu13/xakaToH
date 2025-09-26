@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CreateExamViewDelegate {
-    func createSection()
+    func createExam()
 }
 
 class CreateExamView: UIView {
@@ -21,9 +21,9 @@ class CreateExamView: UIView {
     }
     
     // MARK: - UI
-    private let addSectionButton: UIButton = {
+    private let createExamButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Добавить секцию", for: .normal)
+        button.setTitle("Создать экзамен", for: .normal)
         return button
     }()
     
@@ -45,22 +45,22 @@ class CreateExamView: UIView {
     
     // MARK: - setup
     private func setupUI() {
-        addSubview(addSectionButton)
+        addSubview(createExamButton)
         addSubview(tableView)
         
         backgroundColor = .systemBackground
         
-        addSectionButton.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 5)
-        addSectionButton.pinRight(to: self.safeAreaLayoutGuide.trailingAnchor, 5)
+        createExamButton.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 5)
+        createExamButton.pinRight(to: self.safeAreaLayoutGuide.trailingAnchor, 5)
         
-        tableView.pinTop(to: addSectionButton.bottomAnchor, 5)
+        tableView.pinTop(to: createExamButton.bottomAnchor, 5)
         tableView.pinHorizontal(to: self, 10)
         tableView.pinBottom(to: self.safeAreaLayoutGuide.bottomAnchor, 5)
     }
     
     private func configureButtons() {
-        addSectionButton.addAction(UIAction { [weak self] _ in
-            self?.delegate?.createSection()
+        createExamButton.addAction(UIAction { [weak self] _ in
+            self?.delegate?.createExam()
         }, for: .touchUpInside)
     }
     
@@ -86,5 +86,15 @@ extension CreateExamView {
             }
         }
         return headers
+    }
+    
+    func visibleFooterViews() -> [CreateExamTableFooter] {
+        var footers: [CreateExamTableFooter] = []
+        for section in 0..<tableView.numberOfSections {
+            if let footer = tableView.footerView(forSection: section) as? CreateExamTableFooter {
+                footers.append(footer)
+            }
+        }
+        return footers
     }
 }

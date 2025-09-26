@@ -7,11 +7,12 @@
 
 import UIKit
 
-class CreateExamViewController: UIViewController, CreateExamViewDelegate {
+class CreateExamViewController: UIViewController {
     
     // MARK: - Properties
     private let contentView = CreateExamView()
     private var editableExamModel = EditableExamModel()
+    private let firebaseManager = MockFirebaseDataManager()
     
     // MARK: - Lifecycle
     override func loadView() {
@@ -26,16 +27,25 @@ class CreateExamViewController: UIViewController, CreateExamViewDelegate {
     // MARK: - Setup
     private func setupController() {
         title = "Создание экзамена"
+        if editableExamModel.sections.count == 0 {
+            editableExamModel.sections.append(EditableExamSectionModel())
+        }
         contentView.configureTableView(delegate: self, dataSource: self)
         contentView.delegate = self
     }
     
     // MARK: - Actions
-    func createSection() {
+    private func createSection() {
         editableExamModel.sections.append(EditableExamSectionModel())
         
         contentView.tableView.beginUpdates()
         contentView.tableView.insertSections(IndexSet(integer: editableExamModel.sections.count - 1), with: .automatic)
+        for footer in contentView.visibleFooterViews() {
+            footer.isLast = footer.section == editableExamModel.sections[editableExamModel.sections.count - 1].id
+        }
+        for header in contentView.visibleHeaderViews() {
+            header.isOnlyOneSection = editableExamModel.sections.count == 1
+        }
         contentView.tableView.endUpdates()
     }
     
@@ -107,6 +117,7 @@ extension CreateExamViewController: UITableViewDataSource {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CreateExamTableHeader.reuseIdentifier) as? CreateExamTableHeader else { return nil }
         let sectionId = editableExamModel.sections[section].id
         headerView.configure(sectionId: sectionId, text: editableExamModel.sections[section].name)
+        headerView.isOnlyOneSection = editableExamModel.sections.count == 1
         headerView.delegate = self
         return headerView
     }
@@ -115,6 +126,7 @@ extension CreateExamViewController: UITableViewDataSource {
         guard let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CreateExamTableFooter.reuseIdentifier) as? CreateExamTableFooter else { return nil }
         let sectionId = editableExamModel.sections[section].id
         footerView.configure(with: sectionId)
+        footerView.isLast = section == editableExamModel.sections.count - 1
         footerView.delegate = self
         return footerView
     }
@@ -134,6 +146,15 @@ extension CreateExamViewController: CreateExamTableHeaderDelegate {
         guard let sectionIndex = editableExamModel.sections.firstIndex(where: { $0.id == sectionId }) else { return }
         editableExamModel.sections.remove(at: sectionIndex)
         contentView.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .automatic)
+        
+        contentView.tableView.beginUpdates()
+        for footer in contentView.visibleFooterViews() {
+            footer.isLast = footer.section == editableExamModel.sections[editableExamModel.sections.count - 1].id
+        }
+        for header in contentView.visibleHeaderViews() {
+            header.isOnlyOneSection = editableExamModel.sections.count == 1
+        }
+        contentView.tableView.endUpdates()
     }
 }
 
@@ -160,5 +181,25 @@ extension CreateExamViewController: CreateExamTableFooterDelegate {
         editableExamModel.sections[sectionIndex].questions.append(EditableMCQuestionModel())
         addRow(in: sectionId)
     }
+    
+    func addSectionButtonTapped() {
+        createSection()
+    }
 }
 
+extension CreateExamViewController: CreateExamViewDelegate {
+    func createExam() {
+        Task {
+            do {
+                try await firebaseManager.sendCreatedExamToFirebase(exam: editableExamModel.createExam())
+                await MainActor.run {
+                    self.dismiss(animated: true)
+                }
+            } catch {
+                await MainActor.run {
+                    print("Error: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+}

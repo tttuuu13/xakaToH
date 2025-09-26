@@ -10,6 +10,7 @@ import UIKit
 protocol CreateExamTableFooterDelegate {
     func addTextQuestionButtonTapped(in sectionId: UUID)
     func addMCQuestionButtonTapped(in sectionId: UUID)
+    func addSectionButtonTapped()
 }
 
 class CreateExamTableFooter: UITableViewHeaderFooterView {
@@ -17,7 +18,12 @@ class CreateExamTableFooter: UITableViewHeaderFooterView {
     // MARK: - properties
     static let reuseIdentifier = "AddQuestionCell"
     var delegate: CreateExamTableFooterDelegate?
-    private var section: UUID?
+    private(set) var section: UUID?
+    var isLast: Bool = false {
+        didSet {
+            addSectionButton.isHidden = !isLast
+        }
+    }
     
     // MARK: - UI
     private let addTextQuestionButton: UIButton = {
@@ -38,6 +44,15 @@ class CreateExamTableFooter: UITableViewHeaderFooterView {
         return button
     }()
     
+    private let addSectionButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Добавить cекцию", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 8
+        return button
+    }()
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -50,6 +65,9 @@ class CreateExamTableFooter: UITableViewHeaderFooterView {
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         configureUI()
+        addTextQuestionButton.addTarget(self, action: #selector(addTextQuestionButtonTapped), for: .touchUpInside)
+        addMCQuestionButton.addTarget(self, action: #selector(addMCQuestionButtonTapped), for: .touchUpInside)
+        addSectionButton.addTarget(self, action: #selector(addSectionButtonTapped), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -61,6 +79,7 @@ class CreateExamTableFooter: UITableViewHeaderFooterView {
         contentView.addSubview(stackView)
         stackView.addArrangedSubview(addTextQuestionButton)
         stackView.addArrangedSubview(addMCQuestionButton)
+        stackView.addArrangedSubview(addSectionButton)
         stackView.pin(to: contentView)
     }
     
@@ -77,10 +96,13 @@ class CreateExamTableFooter: UITableViewHeaderFooterView {
         self.delegate?.addMCQuestionButtonTapped(in: section)
     }
     
+    @objc
+    private func addSectionButtonTapped() {
+        self.delegate?.addSectionButtonTapped()
+    }
+    
     // MARK: - public API
     func configure(with sectionId: UUID) {
         self.section = sectionId
-        addTextQuestionButton.addTarget(self, action: #selector(addTextQuestionButtonTapped), for: .touchUpInside)
-        addMCQuestionButton.addTarget(self, action: #selector(addMCQuestionButtonTapped), for: .touchUpInside)
     }
 }
