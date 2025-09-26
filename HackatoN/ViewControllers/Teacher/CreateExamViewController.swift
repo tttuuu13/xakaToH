@@ -12,7 +12,7 @@ class CreateExamViewController: UIViewController {
     // MARK: - Properties
     private let contentView = CreateExamView()
     private var editableExamModel = EditableExamModel()
-    private let firebaseManager = MockFirebaseDataManager()
+    private let firebaseManager = FirebaseDataManager()
     
     // MARK: - Lifecycle
     override func loadView() {
