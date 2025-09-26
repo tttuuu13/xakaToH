@@ -27,7 +27,7 @@ class CreateExamView: UIView {
         return button
     }()
     
-    private let tableView: UITableView = {
+    let tableView: UITableView = {
         let tableView = UITableView()
         return tableView
     }()
@@ -71,26 +71,20 @@ class CreateExamView: UIView {
         tableView.register(EditableTextQuestionCell.self, forCellReuseIdentifier: EditableTextQuestionCell.reuseIdentifier)
         tableView.register(EditableMCQuestionCell.self, forCellReuseIdentifier: EditableMCQuestionCell.reuseIdentifier)
         tableView.register(AddQuestionCell.self, forCellReuseIdentifier: AddQuestionCell.reuseIdentifier)
+        tableView.register(CreateExamTableHeader.self, forHeaderFooterViewReuseIdentifier: CreateExamTableHeader.reuseIdentifier)
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
     }
-    
-    func reloadData() {
-        tableView.reloadData()
-    }
-    
-    func tableBeginUpdates() {
-        tableView.beginUpdates()
-    }
-    
-    func tableEndUpdates() {
-        tableView.endUpdates()
-    }
-    
-    func tableInsertRows(at indexPathes: [IndexPath], with animation: UITableView.RowAnimation) {
-        tableView.insertRows(at: indexPathes, with: animation)
-    }
-    
-    func tableInsertSections(_ sections: IndexSet, with animation: UITableView.RowAnimation) {
-        tableView.insertSections(sections, with: animation)
+}
+
+extension CreateExamView {
+    func visibleHeaderViews() -> [CreateExamTableHeader] {
+        var headers: [CreateExamTableHeader] = []
+        for section in 0..<tableView.numberOfSections {
+            if let header = tableView.headerView(forSection: section) as? CreateExamTableHeader {
+                headers.append(header)
+            }
+        }
+        return headers
     }
 }

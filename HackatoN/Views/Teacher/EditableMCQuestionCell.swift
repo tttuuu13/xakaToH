@@ -29,7 +29,7 @@ class EditableMCQuestionCell: UITableViewCell {
         textView.isScrollEnabled = false
         textView.textContainerInset = .zero
         textView.textContainer.lineFragmentPadding = 0
-        textView.backgroundColor = .clear
+        textView.backgroundColor = .systemGray5
         textView.font = .systemFont(ofSize: 20, weight: .medium)
         return textView
     }()

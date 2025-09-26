@@ -8,5 +8,6 @@
 import Foundation
 
 struct EditableTextQuestionModel: EditableQuestionProtocol {
+    let id: UUID = UUID()
     var question: String = ""
 }
