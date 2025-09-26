@@ -10,7 +10,7 @@ import Foundation
 class MockExamProvider {
     static func provide() -> [ExamModel] {
         return [
-            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-3600), status: .started, sections: [
+            ExamModel(name: "first exam", startTime: Date.now.addingTimeInterval(-3580), status: .started, sections: [
                 ExamSectionModel(name: "section1", questions: [
                     TextQuestionModel(question: "text question 1"),
                     TextQuestionModel(question: "text question 2"),

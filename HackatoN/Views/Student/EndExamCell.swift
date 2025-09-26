@@ -9,9 +9,10 @@ import UIKit
 
 class EndExamCell: UITableViewCell {
     static let reuseIdentifier = "EndExamCell"
+    var tapped: (() -> Void)?
     
     private let endButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.setTitle("Завершить экзамен", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemBlue
@@ -23,10 +24,14 @@ class EndExamCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.addSubview(endButton)
-        
         selectionStyle = .none
-        
         endButton.pin(to: contentView, 5)
+        
+        endButton.addTarget(self, action: #selector(endButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func endButtonTapped() {
+        tapped?()
     }
     
     required init?(coder: NSCoder) {
