@@ -10,8 +10,11 @@ import UIKit
 class EndExamCell: UITableViewCell {
     static let reuseIdentifier = "EndExamCell"
     
+    // Публичный колбэк, который дергается при нажатии на кнопку
+    var onEndTap: (() -> Void)?
+    
     private let endButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.setTitle("Завершить экзамен", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemBlue
@@ -23,13 +26,18 @@ class EndExamCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.addSubview(endButton)
-        
         selectionStyle = .none
         
         endButton.pin(to: contentView, 5)
+        endButton.addTarget(self, action: #selector(didTapEnd), for: .touchUpInside)
+    }
+    
+    @objc private func didTapEnd() {
+        onEndTap?()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+

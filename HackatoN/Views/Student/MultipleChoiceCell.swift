@@ -56,6 +56,8 @@ class MultipleChoiceCell: UITableViewCell {
     func configure(with model: MCQuestionModel, isEditable: Bool) {
         self.isEditable = isEditable
         
+        print("MultipleChoiceCell configure: question=\(model.question), answer=\(model.answer ?? -1), isEditable=\(isEditable)")
+        
         questionLabel.text = model.question
         optionsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         buttons.removeAll()
@@ -65,13 +67,14 @@ class MultipleChoiceCell: UITableViewCell {
             hStack.axis = .horizontal
             hStack.spacing = 8
             hStack.alignment = .center
-            hStack.isUserInteractionEnabled = true
+            hStack.isUserInteractionEnabled = isEditable
             
             let button = UIButton(type: .system)
             button.setTitle("○", for: .normal)
             button.tag = index
             button.widthAnchor.constraint(equalToConstant: 30).isActive = true
             button.addTarget(self, action: #selector(optionSelected(_:)), for: .touchUpInside)
+            button.isEnabled = isEditable
             buttons.append(button)
             
             let label = UILabel()
@@ -82,8 +85,10 @@ class MultipleChoiceCell: UITableViewCell {
             hStack.addArrangedSubview(button)
             hStack.addArrangedSubview(label)
             
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(stackTapped(_:)))
-            hStack.addGestureRecognizer(tapGesture)
+            if isEditable {
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(stackTapped(_:)))
+                hStack.addGestureRecognizer(tapGesture)
+            }
             hStack.tag = index
             
             optionsStackView.addArrangedSubview(hStack)

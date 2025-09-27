@@ -58,6 +58,17 @@ class TextQuestionCell: UITableViewCell, UITextViewDelegate {
         questionLabel.text = model.question
         answerTextView.text = model.answer ?? ""
         answerTextView.isEditable = isEditable
+        
+        print("TextQuestionCell configure: question=\(model.question), answer=\(model.answer ?? "nil"), isEditable=\(isEditable)")
+        
+        // Визуальные изменения для режима только для чтения
+        if !isEditable {
+            answerTextView.backgroundColor = UIColor.systemGray6
+            answerTextView.layer.borderColor = UIColor.systemGray4.cgColor
+        } else {
+            answerTextView.backgroundColor = UIColor.systemBackground
+            answerTextView.layer.borderColor = UIColor.lightGray.cgColor
+        }
     }
     
     func textViewDidChange(_ textView: UITextView) {
