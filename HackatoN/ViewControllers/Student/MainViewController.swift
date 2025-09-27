@@ -43,6 +43,7 @@ final class MainViewController: UIViewController {
         contentView.delegate = self
         contentView.configureTableView(delegate: self, dataSource: self)
         setupLogoutButton()
+        setupPullToRefresh()
     }
     
     private func setupLogoutButton() {
@@ -54,24 +55,34 @@ final class MainViewController: UIViewController {
         )
     }
     
+    private func setupPullToRefresh() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh(_:)), for: .valueChanged)
+        contentView.tableView.refreshControl = refreshControl
+    }
+    
     // MARK: - Data
     private func loadExams() {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Пользователь не авторизован")
+            return
+        }
+        
         Task {
             do {
-                exams = try await firebaseManager.getExamsFromFirebase()
                 // Очищаем старые данные
                 cleanupOldData()
                 // Восстанавливаем все локальные состояния
                 restoreAllLocalStates()
                 // Применяем локальные состояния (старт/финиш/автофиниш по истечению часа)
                 applyLocalStateToExams()
+                exams = try await firebaseManager.getExamsForStudent(studentUID: currentUser.uid)
                 await MainActor.run {
                     sortExams()
                     contentView.reloadData()
                 }
             } catch {
                 print("Ошибка загрузки экзаменов: \(error.localizedDescription)")
-                // Здесь можно показать alert с ошибкой
             }
         }
     }
@@ -254,6 +265,15 @@ final class MainViewController: UIViewController {
     // MARK: - Actions
     @objc private func logoutTapped() {
         mainViewDidRequestLogout(contentView)
+    }
+    
+    @objc private func handleRefresh(_ refreshControl: UIRefreshControl) {
+        loadExams()
+        
+        // Останавливаем индикатор обновления через небольшую задержку
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            refreshControl.endRefreshing()
+        }
     }
 }
 

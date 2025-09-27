@@ -52,7 +52,7 @@ class AuthenticationManager {
             self?.createUserDocument(uid: uid, email: email, name: name, role: "student", completion: completion)
         }
     }
-    
+
     
     // MARK: - Private Methods
     private func getUserRole(uid: String, completion: @escaping (Result<String?, Error>) -> Void) {
