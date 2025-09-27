@@ -63,17 +63,13 @@ final class MainViewController: UIViewController {
         
         Task {
             do {
-<<<<<<< HEAD
-                exams = try await firebaseManager.getExamsFromFirebase()
                 // Очищаем старые данные
                 cleanupOldData()
                 // Восстанавливаем все локальные состояния
                 restoreAllLocalStates()
                 // Применяем локальные состояния (старт/финиш/автофиниш по истечению часа)
                 applyLocalStateToExams()
-=======
                 exams = try await firebaseManager.getExamsForStudent(studentUID: currentUser.uid)
->>>>>>> 75afb90 (done)
                 await MainActor.run {
                     sortExams()
                     contentView.reloadData()
