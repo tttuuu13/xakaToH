@@ -8,8 +8,18 @@
 import Foundation
 
 struct EditableTextQuestionModel: EditableQuestionProtocol {
-    let id: UUID = UUID()
-    var question: String = ""
+    let id: UUID
+    var question: String
+    
+    init(question: String = "") {
+        self.id = UUID()
+        self.question = question
+    }
+    
+    init(id: UUID, question: String) {
+        self.id = id
+        self.question = question
+    }
     
     func createTextQuestion() -> TextQuestionModel {
         TextQuestionModel(question: question)

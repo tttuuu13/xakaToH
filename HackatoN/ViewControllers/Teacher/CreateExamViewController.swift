@@ -96,7 +96,7 @@ extension CreateExamViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: EditableTextQuestionCell.reuseIdentifier, for: indexPath)
             guard let textQuestionCell = cell as? EditableTextQuestionCell else { return cell }
             
-            textQuestionCell.configute(with: textQuestion.question)
+            textQuestionCell.configure(with: textQuestion)
             textQuestionCell.questionChanged = { [weak self] newQuestion in
                 self?.changeQuestion(in:sectionId, with: newQuestion)
             }

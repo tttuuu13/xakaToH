@@ -36,12 +36,13 @@ class FirebaseDataManager {
         }
         
         // Добавляем вопросы в подколлекцию questions
-        for section in exam.sections {
+        for (sectionIndex, section) in exam.sections.enumerated() {
             for question in section.questions {
                 var questionData: [String: Any] = [
                     "id": question.id.uuidString,
                     "question": question.question,
-                    "sectionName": section.name
+                    "sectionName": section.name,
+                    "sectionIndex": sectionIndex // Добавляем индекс для сохранения порядка
                 ]
                 
                 if let mcQuestion = question as? MCQuestionModel {
@@ -85,15 +86,16 @@ class FirebaseDataManager {
             let questionsSnapshot = try await db.collection("quizzes").document(quizId)
                 .collection("questions").getDocuments()
             
-            // Группируем вопросы по секциям
-            var sectionMap: [String: [any QuestionProtocol]] = [:]
+            // Группируем вопросы по секциям с сохранением порядка
+            var sectionMap: [String: (index: Int, questions: [any QuestionProtocol])] = [:]
             
             for questionDoc in questionsSnapshot.documents {
                 let questionData = questionDoc.data()
                 
                 guard let questionText = questionData["question"] as? String,
                       let type = questionData["type"] as? String,
-                      let sectionName = questionData["sectionName"] as? String else {
+                      let sectionName = questionData["sectionName"] as? String,
+                      let sectionIndex = questionData["sectionIndex"] as? Int else {
                     continue
                 }
                 
@@ -107,14 +109,14 @@ class FirebaseDataManager {
                 }
                 
                 if sectionMap[sectionName] == nil {
-                    sectionMap[sectionName] = []
+                    sectionMap[sectionName] = (index: sectionIndex, questions: [])
                 }
-                sectionMap[sectionName]?.append(question)
+                sectionMap[sectionName]?.questions.append(question)
             }
             
-            // Создаем секции из сгруппированных вопросов
-            let sections = sectionMap.map { (sectionName, questions) in
-                ExamSectionModel(name: sectionName, questions: questions)
+            // Создаем секции и сортируем по оригинальному индексу
+            let sections = sectionMap.sorted { $0.value.index < $1.value.index }.map { (sectionName, sectionData) in
+                ExamSectionModel(name: sectionName, questions: sectionData.questions)
             }
             
             let exam = ExamModel(

@@ -12,6 +12,7 @@ final class EditableTextQuestionCell: UITableViewCell, UITextViewDelegate {
     // MARK: - properties
     static let reuseIdentifier = "EditableTextQuestionCell"
     var questionChanged: ((EditableQuestionProtocol) -> Void)?
+    private var currentQuestion: EditableTextQuestionModel?
     
     // MARK: - UI
     private let label: UILabel = {
@@ -59,8 +60,23 @@ final class EditableTextQuestionCell: UITableViewCell, UITextViewDelegate {
         textView.text = text
     }
     
+    func configure(with question: EditableTextQuestionModel) {
+        currentQuestion = question
+        textView.text = question.question
+    }
+    
     func textViewDidChange(_ textView: UITextView) {
-        questionChanged?(EditableTextQuestionModel(question: textView.text))
+        // Используем сохраненную модель и обновляем только текст вопроса
+        if let question = currentQuestion {
+            let updatedQuestion = EditableTextQuestionModel(id: question.id, question: textView.text)
+            currentQuestion = updatedQuestion
+            questionChanged?(updatedQuestion)
+        } else {
+            // Fallback на старый способ
+            let newQuestion = EditableTextQuestionModel(question: textView.text)
+            currentQuestion = newQuestion
+            questionChanged?(newQuestion)
+        }
         
         if let tableView = superview as? UITableView {
             UIView.setAnimationsEnabled(false)
