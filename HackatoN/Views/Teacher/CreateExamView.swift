@@ -71,14 +71,13 @@ class CreateExamView: UIView {
         examNameTextField.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 10)
         examNameTextField.pinHorizontal(to: self, 16)
         examNameTextField.setHeight(44)
-        
+
         // Кнопки
         createExamButton.pinTop(to: examNameTextField.bottomAnchor, 10)
         createExamButton.pinRight(to: self.safeAreaLayoutGuide.trailingAnchor, 16)
 
         addStudentsButton.pinTop(to: examNameTextField.bottomAnchor, 10)
         addStudentsButton.pinLeft(to: self.safeAreaLayoutGuide.leadingAnchor, 16)
-        addStudentsButton.pinRight(to: createExamButton.leadingAnchor, -10)
 
         // Таблица
         tableView.pinTop(to: createExamButton.bottomAnchor, 10)

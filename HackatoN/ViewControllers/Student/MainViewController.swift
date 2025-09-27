@@ -43,6 +43,7 @@ final class MainViewController: UIViewController {
         contentView.delegate = self
         contentView.configureTableView(delegate: self, dataSource: self)
         setupLogoutButton()
+        setupPullToRefresh()
     }
     
     private func setupLogoutButton() {
@@ -52,6 +53,12 @@ final class MainViewController: UIViewController {
             target: self,
             action: #selector(logoutTapped)
         )
+    }
+    
+    private func setupPullToRefresh() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh(_:)), for: .valueChanged)
+        contentView.tableView.refreshControl = refreshControl
     }
     
     // MARK: - Data
@@ -258,6 +265,15 @@ final class MainViewController: UIViewController {
     // MARK: - Actions
     @objc private func logoutTapped() {
         mainViewDidRequestLogout(contentView)
+    }
+    
+    @objc private func handleRefresh(_ refreshControl: UIRefreshControl) {
+        loadExams()
+        
+        // Останавливаем индикатор обновления через небольшую задержку
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            refreshControl.endRefreshing()
+        }
     }
 }
 
