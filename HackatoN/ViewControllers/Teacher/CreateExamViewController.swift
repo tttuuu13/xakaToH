@@ -192,6 +192,19 @@ extension CreateExamViewController: CreateExamTableFooterDelegate {
 
 extension CreateExamViewController: CreateExamViewDelegate {
     func createExam() {
+        let examName = contentView.getExamName()
+        
+        // Проверяем, что название не пустое
+        guard !examName.isEmpty else {
+            let alert = UIAlertController(title: "Ошибка", message: "Введите название экзамена", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+            return
+        }
+        
+        // Устанавливаем название в модель
+        editableExamModel.name = examName
+        
         Task {
             do {
                 try await firebaseManager.sendCreatedExamToFirebase(exam: editableExamModel.createExam())

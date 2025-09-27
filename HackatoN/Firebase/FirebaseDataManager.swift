@@ -74,8 +74,7 @@ class FirebaseDataManager {
             
             guard participantDoc.exists else { continue }
             
-            guard let id = quizData["id"] as? String,
-                  let name = quizData["name"] as? String,
+            guard let name = quizData["name"] as? String,
                   let startTimeTimestamp = quizData["startTime"] as? Timestamp,
                   let statusString = quizData["status"] as? String,
                   let status = ExamStatus(rawValue: statusString) else {

@@ -22,6 +22,14 @@ class CreateExamView: UIView {
     }
     
     // MARK: - UI
+    private let examNameTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Название экзамена"
+        textField.borderStyle = .roundedRect
+        textField.font = UIFont.systemFont(ofSize: 16)
+        return textField
+    }()
+    
     private let createExamButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Создать экзамен", for: .normal)
@@ -52,19 +60,28 @@ class CreateExamView: UIView {
     
     // MARK: - setup
     private func setupUI() {
+        addSubview(examNameTextField)
         addSubview(createExamButton)
-        addSubview(tableView)
         addSubview(addStudentsButton)
+        addSubview(tableView)
 
         backgroundColor = .systemBackground
         
-        createExamButton.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 5)
-        createExamButton.pinRight(to: self.safeAreaLayoutGuide.trailingAnchor, 5)
+        // Поле для названия экзамена
+        examNameTextField.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 10)
+        examNameTextField.pinHorizontal(to: self, 16)
+        examNameTextField.setHeight(44)
+        
+        // Кнопки
+        createExamButton.pinTop(to: examNameTextField.bottomAnchor, 10)
+        createExamButton.pinRight(to: self.safeAreaLayoutGuide.trailingAnchor, 16)
 
-        addStudentsButton.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 5)
-        addStudentsButton.pinLeft(to: self.safeAreaLayoutGuide.leadingAnchor, 5)
+        addStudentsButton.pinTop(to: examNameTextField.bottomAnchor, 10)
+        addStudentsButton.pinLeft(to: self.safeAreaLayoutGuide.leadingAnchor, 16)
+        addStudentsButton.pinRight(to: createExamButton.leadingAnchor, -10)
 
-        tableView.pinTop(to: createExamButton.bottomAnchor, 5)
+        // Таблица
+        tableView.pinTop(to: createExamButton.bottomAnchor, 10)
         tableView.pinHorizontal(to: self, 10)
         tableView.pinBottom(to: self.safeAreaLayoutGuide.bottomAnchor, 5)
     }
@@ -93,6 +110,14 @@ class CreateExamView: UIView {
     
     func updateAddStudentsButtonTitle(_ title: String) {
         addStudentsButton.setTitle(title, for: .normal)
+    }
+    
+    func getExamName() -> String {
+        return examNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    }
+    
+    func setExamName(_ name: String) {
+        examNameTextField.text = name
     }
 }
 
