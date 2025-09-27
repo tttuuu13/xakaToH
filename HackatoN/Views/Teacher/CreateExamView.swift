@@ -9,6 +9,7 @@ import UIKit
 
 protocol CreateExamViewDelegate {
     func createExam()
+    func addStudents()
 }
 
 class CreateExamView: UIView {
@@ -26,7 +27,13 @@ class CreateExamView: UIView {
         button.setTitle("Создать экзамен", for: .normal)
         return button
     }()
-    
+
+    private let addStudentsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Добавить студентов", for: .normal)
+        return button
+    }()
+
     let tableView: UITableView = {
         let tableView = UITableView()
         return tableView
@@ -47,12 +54,16 @@ class CreateExamView: UIView {
     private func setupUI() {
         addSubview(createExamButton)
         addSubview(tableView)
-        
+        addSubview(addStudentsButton)
+
         backgroundColor = .systemBackground
         
         createExamButton.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 5)
         createExamButton.pinRight(to: self.safeAreaLayoutGuide.trailingAnchor, 5)
-        
+
+        addStudentsButton.pinTop(to: self.safeAreaLayoutGuide.topAnchor, 5)
+        addStudentsButton.pinLeft(to: self.safeAreaLayoutGuide.leadingAnchor, 5)
+
         tableView.pinTop(to: createExamButton.bottomAnchor, 5)
         tableView.pinHorizontal(to: self, 10)
         tableView.pinBottom(to: self.safeAreaLayoutGuide.bottomAnchor, 5)
@@ -61,6 +72,10 @@ class CreateExamView: UIView {
     private func configureButtons() {
         createExamButton.addAction(UIAction { [weak self] _ in
             self?.delegate?.createExam()
+        }, for: .touchUpInside)
+        
+        addStudentsButton.addAction(UIAction { [weak self] _ in
+            self?.delegate?.addStudents()
         }, for: .touchUpInside)
     }
     
@@ -74,6 +89,10 @@ class CreateExamView: UIView {
         tableView.register(CreateExamTableHeader.self, forHeaderFooterViewReuseIdentifier: CreateExamTableHeader.reuseIdentifier)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.sectionHeaderHeight = UITableView.automaticDimension
+    }
+    
+    func updateAddStudentsButtonTitle(_ title: String) {
+        addStudentsButton.setTitle(title, for: .normal)
     }
 }
 

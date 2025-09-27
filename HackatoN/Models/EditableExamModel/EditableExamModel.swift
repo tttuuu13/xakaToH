@@ -12,8 +12,10 @@ struct EditableExamModel {
     var name: String = ""
     var startTime: Date = Date.now
     var sections: [EditableExamSectionModel] = []
-    
+    var students: [UUID] = []
+    var selectedStudentUIDs: [String] = []
+
     func createExam() -> ExamModel {
-        ExamModel(name: name, startTime: startTime, status: .scheduled, sections: sections.map { $0.createExamSection() } )
+        ExamModel(name: name, startTime: startTime, status: .scheduled, sections: sections.map { $0.createExamSection() }, studentUIDs: selectedStudentUIDs)
     }
 }

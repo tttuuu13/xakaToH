@@ -56,8 +56,14 @@ final class MainViewController: UIViewController {
     
     // MARK: - Data
     private func loadExams() {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Пользователь не авторизован")
+            return
+        }
+        
         Task {
             do {
+<<<<<<< HEAD
                 exams = try await firebaseManager.getExamsFromFirebase()
                 // Очищаем старые данные
                 cleanupOldData()
@@ -65,13 +71,15 @@ final class MainViewController: UIViewController {
                 restoreAllLocalStates()
                 // Применяем локальные состояния (старт/финиш/автофиниш по истечению часа)
                 applyLocalStateToExams()
+=======
+                exams = try await firebaseManager.getExamsForStudent(studentUID: currentUser.uid)
+>>>>>>> 75afb90 (done)
                 await MainActor.run {
                     sortExams()
                     contentView.reloadData()
                 }
             } catch {
                 print("Ошибка загрузки экзаменов: \(error.localizedDescription)")
-                // Здесь можно показать alert с ошибкой
             }
         }
     }

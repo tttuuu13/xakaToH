@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class CreateExamViewController: UIViewController {
     
@@ -13,6 +14,7 @@ class CreateExamViewController: UIViewController {
     private let contentView = CreateExamView()
     private var editableExamModel = EditableExamModel()
     private let firebaseManager = FirebaseDataManager()
+    private var selectedStudents: [StudentModel] = []
     
     // MARK: - Lifecycle
     override func loadView() {
@@ -32,6 +34,7 @@ class CreateExamViewController: UIViewController {
         }
         contentView.configureTableView(delegate: self, dataSource: self)
         contentView.delegate = self
+        updateAddStudentsButtonTitle()
     }
     
     // MARK: - Actions
@@ -201,5 +204,40 @@ extension CreateExamViewController: CreateExamViewDelegate {
                 }
             }
         }
+    }
+    
+    func addStudents() {
+        let studentSelectionVC = StudentSelectionViewController()
+        studentSelectionVC.delegate = self
+        studentSelectionVC.setPreselectedStudents(selectedStudents)
+        
+        let navigationController = UINavigationController(rootViewController: studentSelectionVC)
+        navigationController.modalPresentationStyle = .pageSheet
+        
+        if let sheet = navigationController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        present(navigationController, animated: true)
+    }
+}
+
+extension CreateExamViewController: StudentSelectionViewControllerDelegate {
+    func studentSelectionViewController(_ controller: StudentSelectionViewController, didSelectStudents students: [StudentModel]) {
+        selectedStudents = students
+        editableExamModel.selectedStudentUIDs = students.map { $0.uid }
+        updateAddStudentsButtonTitle()
+        
+        print("Выбрано студентов: \(students.count)")
+        for student in students {
+            print("- \(student.name) (\(student.email))")
+        }
+    }
+    
+    private func updateAddStudentsButtonTitle() {
+        let count = selectedStudents.count
+        let title = count == 0 ? "Добавить студентов" : "Студентов: \(count)"
+        contentView.updateAddStudentsButtonTitle(title)
     }
 }

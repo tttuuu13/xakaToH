@@ -1,182 +1,203 @@
-import Foundation
-import FirebaseAuth
-import FirebaseFirestore
+//
+//  FirebaseDataManager.swift
+//  HackatoN
+//
+//  Created by Nick on 27.09.2025.
+//
 
-final class FirebaseDataManager {
+import Foundation
+import FirebaseFirestore
+import FirebaseAuth
+
+class FirebaseDataManager {
+    private let db = Firestore.firestore()
     
-    private let db: Firestore
-    private let auth: Auth
-    private let collectionName: String = "quizzes"
-    
-    init(db: Firestore = Firestore.firestore(), auth: Auth = Auth.auth()) {
-        self.db = db
-        self.auth = auth
-    }
-    
-    enum DataManagerError: LocalizedError {
-        case userNotAuthenticated
-        case emptySnapshot
+    func sendCreatedExamToFirebase(exam: ExamModel) async throws {
+        let quizData: [String: Any] = [
+            "id": exam.id.uuidString,
+            "name": exam.name,
+            "startTime": Timestamp(date: exam.startTime),
+            "status": exam.status.rawValue,
+            "durationSec": 3600 // 1 час по умолчанию
+        ]
         
-        var errorDescription: String? {
-            switch self {
-            case .userNotAuthenticated:
-                return "Пользователь не авторизован"
-            case .emptySnapshot:
-                return "Пустой ответ от Firestore"
+        let quizRef = db.collection("quizzes").document(exam.id.uuidString)
+        
+        // Сохраняем основную информацию о квизе
+        try await quizRef.setData(quizData)
+        
+        // Добавляем участников в подколлекцию participants
+        for studentUID in exam.studentUIDs {
+            let participantData: [String: Any] = [
+                "uid": studentUID,
+                "joinedAt": Timestamp(date: Date())
+            ]
+            try await quizRef.collection("participants").document(studentUID).setData(participantData)
+        }
+        
+        // Добавляем вопросы в подколлекцию questions
+        for section in exam.sections {
+            for question in section.questions {
+                var questionData: [String: Any] = [
+                    "id": question.id.uuidString,
+                    "question": question.question,
+                    "sectionName": section.name
+                ]
+                
+                if let mcQuestion = question as? MCQuestionModel {
+                    questionData["type"] = "multiple_choice"
+                    questionData["options"] = mcQuestion.options
+                } else {
+                    questionData["type"] = "text"
+                }
+                
+                try await quizRef.collection("questions").document(question.id.uuidString).setData(questionData)
             }
         }
+        
+        print("Квиз успешно сохранен в Firebase")
     }
     
-    // Загрузка экзаменов из Firestore (только созданных текущим пользователем)
-    func getExamsFromFirebase() async throws -> [ExamModel] {
-        guard let uid = auth.currentUser?.uid else {
-            throw DataManagerError.userNotAuthenticated
-        }
-        
-        let snapshot: QuerySnapshot = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<QuerySnapshot, Error>) in
-            db.collection(collectionName)
-                .getDocuments { snapshot, error in  // Загружаем ВСЕ экзамены
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                    } else if let snapshot = snapshot {
-                        continuation.resume(returning: snapshot)
-                    } else {
-                        continuation.resume(throwing: DataManagerError.emptySnapshot)
-                    }
-                }
-        }
+    func getExamsForStudent(studentUID: String) async throws -> [ExamModel] {
+        // Получаем все квизы где пользователь является участником
+        let quizzesSnapshot = try await db.collection("quizzes").getDocuments()
         
         var exams: [ExamModel] = []
-        for document in snapshot.documents {
-            let data = document.data()
+        
+        for quizDoc in quizzesSnapshot.documents {
+            let quizData = quizDoc.data()
+            let quizId = quizDoc.documentID
             
-            let name = data["name"] as? String ?? ""
+            // Проверяем, является ли пользователь участником этого квиза
+            let participantDoc = try await db.collection("quizzes").document(quizId)
+                .collection("participants").document(studentUID).getDocument()
             
-            let startTime: Date = {
-                if let ts = data["startTime"] as? Timestamp {
-                    return ts.dateValue()
-                } else if let date = data["startTime"] as? Date {
-                    return date
-                } else {
-                    return Date()
-                }
-            }()
+            guard participantDoc.exists else { continue }
             
-            let statusString = data["status"] as? String ?? ExamStatus.scheduled.rawValue
-            let status = ExamStatus(rawValue: statusString) ?? .scheduled
-            
-            let sectionsArray = data["sections"] as? [[String: Any]] ?? []
-            var sections: [ExamSectionModel] = []
-            
-            for sectionDict in sectionsArray {
-                let sectionName = sectionDict["name"] as? String ?? ""
-                let questionsArray = sectionDict["questions"] as? [[String: Any]] ?? []
-                var questions: [QuestionProtocol] = []
-                
-                for qDict in questionsArray {
-                    let type = qDict["type"] as? String ?? "text"
-                    let qText = qDict["question"] as? String ?? ""
-                    
-                    let grade: Int? = {
-                        if let n = qDict["grade"] as? NSNumber {
-                            return n.intValue
-                        } else if let i = qDict["grade"] as? Int {
-                            return i
-                        } else if let d = qDict["grade"] as? Double {
-                            return Int(d)
-                        } else {
-                            return nil
-                        }
-                    }()
-                    
-                    switch type {
-                    case "mc":
-                        let options = qDict["options"] as? [String] ?? []
-                        let answer: Int? = {
-                            if let n = qDict["answer"] as? NSNumber { return n.intValue }
-                            return qDict["answer"] as? Int
-                        }()
-                        let model = MCQuestionModel(question: qText, options: options, answer: answer, grade: grade)
-                        questions.append(model)
-                    default:
-                        let answer = qDict["answer"] as? String
-                        let model = TextQuestionModel(question: qText, answer: answer, grade: grade)
-                        questions.append(model)
-                    }
-                }
-                
-                sections.append(ExamSectionModel(name: sectionName, questions: questions))
+            guard let id = quizData["id"] as? String,
+                  let name = quizData["name"] as? String,
+                  let startTimeTimestamp = quizData["startTime"] as? Timestamp,
+                  let statusString = quizData["status"] as? String,
+                  let status = ExamStatus(rawValue: statusString) else {
+                continue
             }
             
-            let exam = ExamModel(name: name, startTime: startTime, status: status, sections: sections)
+            // Получаем вопросы из подколлекции
+            let questionsSnapshot = try await db.collection("quizzes").document(quizId)
+                .collection("questions").getDocuments()
+            
+            // Группируем вопросы по секциям
+            var sectionMap: [String: [any QuestionProtocol]] = [:]
+            
+            for questionDoc in questionsSnapshot.documents {
+                let questionData = questionDoc.data()
+                
+                guard let questionText = questionData["question"] as? String,
+                      let type = questionData["type"] as? String,
+                      let sectionName = questionData["sectionName"] as? String else {
+                    continue
+                }
+                
+                let question: any QuestionProtocol
+                
+                if type == "multiple_choice" {
+                    guard let options = questionData["options"] as? [String] else { continue }
+                    question = MCQuestionModel(question: questionText, options: options)
+                } else {
+                    question = TextQuestionModel(question: questionText)
+                }
+                
+                if sectionMap[sectionName] == nil {
+                    sectionMap[sectionName] = []
+                }
+                sectionMap[sectionName]?.append(question)
+            }
+            
+            // Создаем секции из сгруппированных вопросов
+            let sections = sectionMap.map { (sectionName, questions) in
+                ExamSectionModel(name: sectionName, questions: questions)
+            }
+            
+            let exam = ExamModel(
+                name: name,
+                startTime: startTimeTimestamp.dateValue(),
+                status: status,
+                sections: sections,
+                studentUIDs: [studentUID] // Для совместимости
+            )
+            
             exams.append(exam)
         }
         
         return exams
     }
     
-    // Сохранение экзамена в Firestore
-    func sendCreatedExamToFirebase(exam: ExamModel) async throws {
-        guard let uid = auth.currentUser?.uid else {
-            throw DataManagerError.userNotAuthenticated
-        }
+    func getAllExams() async throws -> [ExamModel] {
+        let snapshot = try await db.collection("exams").getDocuments()
         
-        var data = examToDictionary(exam, createdBy: uid)
-        data["createdAt"] = FieldValue.serverTimestamp()
+        var exams: [ExamModel] = []
         
-        try await addDocument(collection: collectionName, data: data)
-    }
-    
-    // MARK: - Private
-    
-    private func addDocument(collection: String, data: [String: Any]) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            db.collection(collection).addDocument(data: data) { error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: ())
-                }
-            }
-        }
-    }
-    
-    private func examToDictionary(_ exam: ExamModel, createdBy: String) -> [String: Any] {
-        let sectionsArray: [[String: Any]] = exam.sections.map { section in
-            let questionsArray: [[String: Any]] = section.questions.map { q in
-                var base: [String: Any] = [
-                    "id": q.id.uuidString,
-                    "question": q.question
-                ]
-                if let grade = q.grade { base["grade"] = grade }
-                
-                if let text = q as? TextQuestionModel {
-                    base["type"] = "text"
-                    if let ans = text.answer { base["answer"] = ans }
-                } else if let mc = q as? MCQuestionModel {
-                    base["type"] = "mc"
-                    base["options"] = mc.options
-                    if let ans = mc.answer { base["answer"] = ans }
-                } else {
-                    base["type"] = "unknown"
-                }
-                return base
+        for document in snapshot.documents {
+            let data = document.data()
+            
+            guard let id = data["id"] as? String,
+                  let examId = UUID(uuidString: id),
+                  let name = data["name"] as? String,
+                  let startTimeTimestamp = data["startTime"] as? Timestamp,
+                  let statusString = data["status"] as? String,
+                  let status = ExamStatus(rawValue: statusString),
+                  let studentUIDs = data["studentUIDs"] as? [String],
+                  let sectionsData = data["sections"] as? [[String: Any]] else {
+                continue
             }
             
-            return [
-                "id": section.id.uuidString,
-                "name": section.name,
-                "questions": questionsArray
-            ]
+            let sections = sectionsData.compactMap { sectionData -> ExamSectionModel? in
+                guard let sectionId = sectionData["id"] as? String,
+                      let sectionUUID = UUID(uuidString: sectionId),
+                      let sectionName = sectionData["name"] as? String,
+                      let questionsData = sectionData["questions"] as? [[String: Any]] else {
+                    return nil
+                }
+                
+                let questions = questionsData.compactMap { questionData -> (any QuestionProtocol)? in
+                    guard let questionId = questionData["id"] as? String,
+                          let questionUUID = UUID(uuidString: questionId),
+                          let questionText = questionData["question"] as? String,
+                          let type = questionData["type"] as? String else {
+                        return nil
+                    }
+                    
+                    if type == "multiple_choice" {
+                        guard let options = questionData["options"] as? [String] else {
+                            return nil
+                        }
+                        
+                        let answer = questionData["answer"] as? Int
+                        let grade = questionData["grade"] as? Int
+                        
+                        return MCQuestionModel(question: questionText, options: options, answer: answer, grade: grade)
+                    } else {
+                        let answer = questionData["answer"] as? String
+                        let grade = questionData["grade"] as? Int
+                        
+                        return TextQuestionModel(question: questionText, answer: answer, grade: grade)
+                    }
+                }
+                
+                return ExamSectionModel(name: sectionName, questions: questions)
+            }
+            
+            let exam = ExamModel(
+                name: name,
+                startTime: startTimeTimestamp.dateValue(),
+                status: status,
+                sections: sections,
+                studentUIDs: studentUIDs
+            )
+            
+            exams.append(exam)
         }
         
-        return [
-            "id": exam.id.uuidString,
-            "name": exam.name,
-            "startTime": exam.startTime,
-            "status": exam.status.rawValue,
-            "sections": sectionsArray,
-            "createdBy": createdBy
-        ]
+        return exams
     }
 }

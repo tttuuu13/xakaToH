@@ -12,4 +12,5 @@ struct ExamModel {
     let startTime: Date
     var status: ExamStatus
     var sections: [ExamSectionModel]
+    var studentUIDs: [String] = []
 }
