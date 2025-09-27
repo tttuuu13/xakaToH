@@ -104,7 +104,7 @@ final class TeacherMainView: UIView {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
-        label.text = "Викторин"
+        label.text = "Экзаменов"
         label.textColor = .systemGray
         return label
     }()
@@ -119,7 +119,7 @@ final class TeacherMainView: UIView {
     
     private let createQuizButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Создать викторину", for: .normal)
+        button.setTitle("Создать экзамен", for: .normal)
         button.backgroundColor = UIColor.systemBlue
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 12
