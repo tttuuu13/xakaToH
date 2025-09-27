@@ -114,7 +114,7 @@ extension TeacherMainViewController: TeacherMainViewDelegate {
     }
     
     func teacherMainViewDidTapViewStudents(_ view: TeacherMainView) {
-        let studentsVC = StudentsListViewController()
+        let studentsVC = StudentListViewController()
         navigationController?.pushViewController(studentsVC, animated: true)
     }
     
